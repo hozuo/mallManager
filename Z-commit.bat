@@ -1,4 +1,4 @@
-set/p remark=ÊäÈë×¢ÊÍ:
+set/p remark=×¢ÊÍ:
 git add .
 git commit -m "%remark%"
 pause
