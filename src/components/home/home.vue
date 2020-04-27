@@ -21,7 +21,7 @@
         </el-col>
         <el-col :span="1">
           <div class="grid-content bg-purple">
-            <el-link href="#">退出</el-link>
+            <el-link @click.prevent="doSingout()">退出</el-link>
           </div>
         </el-col>
       </el-row>
@@ -64,7 +64,7 @@
               <i class="el-icon-menu"></i>
               <span>订单管理</span>
             </template>
-            <el-menu-item index="2-1">选项1</el-menu-item>
+            <el-menu-item index="2-1">订单列表</el-menu-item>
             <el-menu-item index="2-2">选项2</el-menu-item>
           </el-submenu>
           <!-- 导航5 -->
@@ -88,6 +88,24 @@
 export default {
   data () {
     return {}
+  },
+  methods: {
+    doSingout () {
+      // 清除tocken
+      localStorage.clear()
+      this.$message.success('退出成功')
+      // 转到login
+      this.$router.push({ name: 'login' })
+    }
+  },
+  beforeCreate () {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      this.$message('用户未登录')
+      this.$router.push({ name: 'login' })
+    }
+    // TODO判断token是否合法 暂时全部合法
+    // this.$http.get('#',token)
   }
 }
 </script>

@@ -28,24 +28,28 @@ export default {
       console.log(this.$http)
       // 发送登录请求(异步操作封装成同步代码)
       const res = await this.$http.post('/login', this.formdata)
-      console.log(1)
 
       // 解构
       const {
-        data,
-        data: { token },
-        meta: { msg, status }
+        meta: { status }
       } = res.data
-      // 打印
-      console.log(data)
-      console.log(token)
-      console.log(msg)
       console.log(status)
-      // 判断登陆成功
+
+      // 判断返回正确结果
       if (status === 200) {
+        // 解构
+        const {
+          data: { token },
+          meta: { msg }
+        } = res.data
+        console.log(token)
+        console.log(msg)
+
         // 提示成功
         this.$message.success('登陆成功')
+        // 存储token
         localStorage.setItem('token', token)
+
         // 跳转主页
         this.$router.push({ name: 'home' })
       } else {
