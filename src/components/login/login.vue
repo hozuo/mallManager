@@ -19,7 +19,8 @@ export default {
     return {
       formdata: {
         username: '',
-        password: ''
+        password: '',
+        isRememberMe: ''
       }
     }
   },
@@ -27,28 +28,35 @@ export default {
     async doLogin () {
       console.log(this.$http)
       // 发送登录请求(异步操作封装成同步代码)
-      const res = await this.$http.post('/login', this.formdata)
+      // const res = await this.$http.post('/login', this.formdata)
+      var params = new URLSearchParams()
+      params.append('username', this.formdata.username)
+      params.append('password', this.formdata.password)
+      // const res = await this.$http.post(
+      //   'http://api.ericson.top:2020/user/login',
+      //   params
+      // )
+      const res = await this.$http.post(
+        'http://api.ericson.top:2020/user/login',
+        params
+      )
+      console.log(res)
 
       // 解构
-      const {
-        meta: { status }
-      } = res.data
-      console.log(status)
+      const { code } = res.data
+      console.log(code)
 
       // 判断返回正确结果
-      if (status === 200) {
+      if (code === '200') {
         // 解构
-        const {
-          data: { token },
-          meta: { msg }
-        } = res.data
-        console.log(token)
-        console.log(msg)
+        const { data, message } = res.data
+        console.log(data)
+        console.log(message)
 
         // 提示成功
         this.$message.success('登陆成功')
         // 存储token
-        localStorage.setItem('token', token)
+        localStorage.setItem('token', data)
 
         // 跳转主页
         this.$router.push({ name: 'home' })
@@ -56,6 +64,10 @@ export default {
         this.$message.warning('用户名或密码错误')
       }
     }
+  },
+  mounted () {
+    document.domain = 'ericson.top'
+    window.domain = 'a.com'
   }
 }
 </script>

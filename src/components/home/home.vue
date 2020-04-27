@@ -106,6 +106,9 @@ export default {
     }
     // TODO判断token是否合法 暂时全部合法
     // this.$http.get('#',token)
+  },
+  mounted () {
+    document.domain = 'ericson.top'
   }
 }
 </script>
