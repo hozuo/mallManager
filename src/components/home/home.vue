@@ -30,14 +30,20 @@
     <el-container>
       <!-- 侧栏 -->
       <el-aside width="200px">
-        <el-menu @open="handleOpen" @close="handleClose" :unique-opened="true">
+        <el-menu
+          @open="handleOpen"
+          @close="handleClose"
+          :unique-opened="true"
+          collapse-transition="false"
+          router="true"
+        >
           <!-- 导航1 -->
           <el-submenu index="1">
             <template slot="title">
               <i class="el-icon-menu"></i>
               <span>用户管理</span>
             </template>
-            <el-menu-item index="1-1">用户列表</el-menu-item>
+            <el-menu-item index="/user">用户列表</el-menu-item>
           </el-submenu>
           <!-- 导航2 -->
           <el-submenu index="2">
@@ -79,7 +85,9 @@
         </el-menu>
       </el-aside>
       <!-- 主体 -->
-      <el-main>Main</el-main>
+      <el-main>
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
