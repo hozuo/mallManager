@@ -26,6 +26,24 @@ export default {
   methods: {
     doLogin () {
       console.log(this.$http)
+      this.$http.post('/login', this.formdata).then(res => {
+        const {
+          data,
+          meta: { msg, status }
+        } = res.data
+        console.log(data)
+        console.log(msg)
+        console.log(status)
+        if (status === 200) {
+          // 登陆成功
+          // 提示成功
+          this.$message.success('登陆成功')
+          // 跳转主页
+          this.$http.push({ name: 'home' })
+        } else {
+          this.$message.warning('用户名或密码错误')
+        }
+      })
     }
   }
 }
