@@ -34,8 +34,8 @@
           @open="handleOpen"
           @close="handleClose"
           :unique-opened="true"
-          collapse-transition="false"
-          router="true"
+          :collapse-transition="false"
+          :router="true"
         >
           <!-- 导航1 -->
           <el-submenu index="1">
