@@ -33,16 +33,19 @@ export default {
       // 解构
       const {
         data,
+        data: { token },
         meta: { msg, status }
       } = res.data
       // 打印
       console.log(data)
+      console.log(token)
       console.log(msg)
       console.log(status)
       // 判断登陆成功
       if (status === 200) {
         // 提示成功
         this.$message.success('登陆成功')
+        localStorage.setItem('token', token)
         // 跳转主页
         this.$router.push({ name: 'home' })
       } else {
