@@ -14,13 +14,15 @@
 </template>
 
 <script>
+import Qs from 'qs'
+
 export default {
   data () {
     return {
       formdata: {
         username: '',
         password: '',
-        isRememberMe: ''
+        isRememberMe: 'false'
       }
     }
   },
@@ -36,10 +38,18 @@ export default {
       //   'http://api.ericson.top:2020/user/login',
       //   params
       // )
-      const res = await this.$http.post(
-        'http://api.ericson.top:2020/user/login',
-        params
-      )
+      const res = await this.$http({
+        url: 'http://api.ericson.top:2020/user/login',
+        method: 'post',
+        transformRequest: [
+          data => {
+            // 对 data 进行任意转换处理
+            return Qs.stringify(data)
+          }
+        ],
+        data: this.formdata
+      })
+
       console.log(res)
 
       // 解构
