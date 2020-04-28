@@ -40,6 +40,15 @@
       <el-table-column prop="updateUserStr" label="修改用户" width="120"></el-table-column>
       <el-table-column prop="createTime" label="创建时间" width="180"></el-table-column>
       <el-table-column prop="createUserStr" label="创建用户" width="120"></el-table-column>
+      <el-table-column label="操作" width="200">
+        <template slot-scope="scope">
+          <el-row>
+            <el-button type="primary" icon="el-icon-edit" circle size="mini" plain="true"></el-button>
+            <el-button type="success" icon="el-icon-check" circle size="mini" plain="true"></el-button>
+            <el-button type="danger" icon="el-icon-delete" circle size="mini" plain="true"></el-button>
+          </el-row>
+        </template>
+      </el-table-column>
     </el-table>
   </el-card>
 </template>
