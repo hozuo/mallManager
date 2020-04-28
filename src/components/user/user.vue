@@ -9,12 +9,10 @@
     </el-breadcrumb>
     <!-- 搜索 -->
     <el-row>
-      <el-col :span="6">
-        <div style>
+      <el-col :span="8">
           <el-input placeholder="请输入内容" v-model="query" class="inputSearch">
             <el-button slot="append" icon="el-icon-search"></el-button>
           </el-input>
-        </div>
       </el-col>
       <el-col :span="4">
         <el-button class="inputSearchButton" type="success">添加用户</el-button>
@@ -57,113 +55,54 @@ export default {
           address: '上海市普陀区金沙江路 1518 弄'
         },
         {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-08',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-06',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
           date: '2016-05-07',
           name: '王小虎',
           address: '上海市普陀区金沙江路 1518 弄'
         }
       ],
+      // 分页查询参数
+      pageQuery: {
+        /** 当前页码 */
+        pageCurrent: '1',
+        /** 页面行数 */
+        pageSize: '10',
+        /** 排序字段 */
+        orderBy: '',
+        /** 升序降序,默认升序 */
+        isASC: '',
+        /** 按照名称查询 */
+        name: ''
+      },
       query: ''
     }
+  },
+  methods: {
+    async getUserList () {
+      const res = await this.$http({
+        url: 'http://api.ericson.top:2020/users',
+        method: 'post',
+        transformRequest: [
+          data => {
+            // 对 data 进行任意转换处理
+            return this.$Qs.stringify(data)
+          }
+        ],
+        data: this.pageQuery
+      })
+
+      // 解构
+      const { status } = res.data
+      console.log(status)
+
+      // 判断返回正确结果
+      if (status === '200') {
+        // 解构
+        const { data, message } = res.data
+      }
+    }
+  },
+  created () {
+    this.getUserList()
   }
 }
 </script>

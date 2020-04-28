@@ -8,9 +8,12 @@ import router from './router'
 import '@/plugins/element.js'
 import '@/plugins/http.js'
 
+import Qs from 'qs'
+
 import '@/assets/css/reset.css'
 
 Vue.config.productionTip = false
+Vue.prototype.$Qs = Qs
 
 /* eslint-disable no-new */
 new Vue({

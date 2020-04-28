@@ -14,7 +14,6 @@
 </template>
 
 <script>
-import Qs from 'qs'
 
 export default {
   data () {
@@ -27,24 +26,15 @@ export default {
     }
   },
   methods: {
+    // 登录
     async doLogin () {
-      console.log(this.$http)
-      // 发送登录请求(异步操作封装成同步代码)
-      // const res = await this.$http.post('/login', this.formdata)
-      var params = new URLSearchParams()
-      params.append('username', this.formdata.username)
-      params.append('password', this.formdata.password)
-      // const res = await this.$http.post(
-      //   'http://api.ericson.top:2020/user/login',
-      //   params
-      // )
       const res = await this.$http({
         url: 'http://api.ericson.top:2020/user/login',
         method: 'post',
         transformRequest: [
           data => {
             // 对 data 进行任意转换处理
-            return Qs.stringify(data)
+            return this.$Qs.stringify(data)
           }
         ],
         data: this.formdata
@@ -53,15 +43,15 @@ export default {
       console.log(res)
 
       // 解构
-      const { code } = res.data
-      console.log(code)
+      const { status } = res.data
+      console.log(status)
 
       // 判断返回正确结果
-      if (code === '200') {
+      if (status === '200') {
         // 解构
-        const { data, message } = res.data
+        const { data, msg } = res.data
         console.log(data)
-        console.log(message)
+        console.log(msg)
 
         // 提示成功
         this.$message.success('登陆成功')
@@ -70,14 +60,11 @@ export default {
 
         // 跳转主页
         this.$router.push({ name: 'home' })
-      } else {
-        this.$message.warning('用户名或密码错误')
+      } else if (status === '205') {
+        const { msg } = res.data
+        this.$message.warning(msg)
       }
     }
-  },
-  mounted () {
-    document.domain = 'ericson.top'
-    window.domain = 'a.com'
   }
 }
 </script>
