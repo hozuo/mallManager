@@ -10,31 +10,26 @@
     <!-- 搜索 -->
     <el-row>
       <el-col :span="8">
-          <el-input placeholder="请输入内容" v-model="query" class="inputSearch">
-            <el-button slot="append" icon="el-icon-search"></el-button>
-          </el-input>
+        <el-input placeholder="请输入内容" v-model="pageQuery.name" class="inputSearch">
+          <el-button slot="append" icon="el-icon-search" @click="getUserList()"></el-button>
+        </el-input>
       </el-col>
       <el-col :span="4">
         <el-button class="inputSearchButton" type="success">添加用户</el-button>
       </el-col>
     </el-row>
     <!-- 表格 -->
-    <el-table
-      ref="multipleTable"
-      :data="tableData"
-      height="500px"
-      style="width: 100%,"
-    >
+    <el-table ref="multipleTable" :data="tableData" height="500px" style="width: 100%,">
       <el-table-column type="index" label="#" width="55"></el-table-column>
-      <el-table-column prop="name" label="用户名" width="120"></el-table-column>
-      <el-table-column prop="date" label="用户id" width="180"></el-table-column>
-      <el-table-column prop="name" label="电子邮箱" width="180"></el-table-column>
-      <el-table-column prop="address" label="电话" width="180"></el-table-column>
-      <el-table-column prop="address" label="用户状态" width="180"></el-table-column>
-      <el-table-column prop="address" label="修改时间" width="180"></el-table-column>
-      <el-table-column prop="address" label="修改用户" width="180"></el-table-column>
-      <el-table-column prop="address" label="创建时间" width="180"></el-table-column>
-      <el-table-column prop="address" label="创建用户" width="180"></el-table-column>
+      <el-table-column prop="userId" label="用户id" width="70"></el-table-column>
+      <el-table-column prop="username" label="用户名" width="120"></el-table-column>
+      <el-table-column prop="email" label="电子邮箱" width="180"></el-table-column>
+      <el-table-column prop="phone" label="电话" width="120"></el-table-column>
+      <el-table-column prop="invitation" label="用户状态" width="90"></el-table-column>
+      <el-table-column prop="updateTime" label="修改时间" width="180"></el-table-column>
+      <el-table-column prop="updateUserStr" label="修改用户" width="120"></el-table-column>
+      <el-table-column prop="createTime" label="创建时间" width="180"></el-table-column>
+      <el-table-column prop="createUserStr" label="创建用户" width="120"></el-table-column>
     </el-table>
   </el-card>
 </template>
@@ -43,23 +38,7 @@
 export default {
   data () {
     return {
-      tableData: [
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-07',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }
-      ],
+      tableData: [],
       // 分页查询参数
       pageQuery: {
         /** 当前页码 */
@@ -67,11 +46,11 @@ export default {
         /** 页面行数 */
         pageSize: '10',
         /** 排序字段 */
-        orderBy: '',
+        orderBy: null,
         /** 升序降序,默认升序 */
-        isASC: '',
+        isASC: null,
         /** 按照名称查询 */
-        name: ''
+        name: null
       },
       query: ''
     }
@@ -80,29 +59,31 @@ export default {
     async getUserList () {
       const res = await this.$http({
         url: 'http://api.ericson.top:2020/users',
-        method: 'post',
-        transformRequest: [
-          data => {
-            // 对 data 进行任意转换处理
-            return this.$Qs.stringify(data)
-          }
-        ],
-        data: this.pageQuery
+        method: 'get',
+        headers: {
+          'token': localStorage.getItem('token'),
+          'Access-Control-Allow-Headers': ''
+        },
+        params: this.pageQuery
       })
 
       // 解构
-      const { status } = res.data
+      const { status, msg } = res.data
       console.log(status)
+      console.log(msg)
 
       // 判断返回正确结果
       if (status === '200') {
         // 解构
-        const { data, message } = res.data
+        const { data } = res.data
+        console.log(data)
+        this.tableData = data.records
       }
     }
   },
   created () {
     this.getUserList()
+    console.log(localStorage.getItem('token'))
   }
 }
 </script>
