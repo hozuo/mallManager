@@ -25,7 +25,17 @@
       <el-table-column prop="username" label="用户名" width="120"></el-table-column>
       <el-table-column prop="email" label="电子邮箱" width="180"></el-table-column>
       <el-table-column prop="phone" label="电话" width="120"></el-table-column>
-      <el-table-column prop="invitation" label="用户状态" width="90"></el-table-column>
+      <el-table-column label="用户状态" width="90">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.invitation"
+            active-value="0"
+            inactive-value="1"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+          ></el-switch>
+        </template>
+      </el-table-column>
       <el-table-column prop="updateTime" label="修改时间" width="180"></el-table-column>
       <el-table-column prop="updateUserStr" label="修改用户" width="120"></el-table-column>
       <el-table-column prop="createTime" label="创建时间" width="180"></el-table-column>
@@ -38,6 +48,7 @@
 export default {
   data () {
     return {
+      // 表格使用的数组
       tableData: [],
       // 分页查询参数
       pageQuery: {
@@ -52,7 +63,7 @@ export default {
         /** 按照名称查询 */
         name: null
       },
-      query: ''
+      invitation: false
     }
   },
   methods: {
@@ -61,7 +72,7 @@ export default {
         url: 'http://api.ericson.top:2020/users',
         method: 'get',
         headers: {
-          'token': localStorage.getItem('token'),
+          token: localStorage.getItem('token'),
           'Access-Control-Allow-Headers': ''
         },
         params: this.pageQuery
