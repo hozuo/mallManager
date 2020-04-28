@@ -236,8 +236,17 @@ export default {
         data: this.AddUserForm
       })
       console.log(res)
+      const { status } = res.data
+      console.log(status)
 
-      this.dialogFormVisibleAddUser = false
+      // 判断返回正确结果
+      if (status === '200') {
+        this.$message.success('创建用户成功')
+        this.dialogFormVisibleAddUser = false
+      } if (status === '401') {
+        const { msg } = res.data
+        this.$message.warning(msg)
+      }
     }
   },
 
