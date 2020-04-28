@@ -31,8 +31,6 @@
       <!-- 侧栏 -->
       <el-aside width="200px">
         <el-menu
-          @open="handleOpen"
-          @close="handleClose"
           :unique-opened="true"
           :collapse-transition="false"
           :router="true"
