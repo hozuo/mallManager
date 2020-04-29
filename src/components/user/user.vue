@@ -2,11 +2,7 @@
   <!-- 卡片 -->
   <el-card class="box-card">
     <!-- 面包屑 -->
-    <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>用户管理</el-breadcrumb-item>
-      <el-breadcrumb-item>用户列表</el-breadcrumb-item>
-    </el-breadcrumb>
+    <my-bread :myBreadList='myBreadList'></my-bread>
     <!-- 搜索 -->
     <el-row>
       <el-col :span="8">
@@ -264,7 +260,9 @@ export default {
             trigger: 'change'
           }
         ]
-      }
+      },
+
+      myBreadList: ['用户管理', '用户列表']
     }
   },
 
@@ -511,7 +509,6 @@ export default {
 
 <style>
 .box-card {
-  height: 550px;
 }
 .inputSearch {
   margin-top: 15px;
