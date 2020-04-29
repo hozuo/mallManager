@@ -33,6 +33,7 @@
       <el-table-column type="index" label="#" width="55"></el-table-column>
       <el-table-column prop="userId" label="用户id" width="100" sortable></el-table-column>
       <el-table-column prop="username" label="用户名" width="120" sortable></el-table-column>
+      <el-table-column prop="rolename" label="角色" width="120" sortable></el-table-column>
       <el-table-column prop="email" label="电子邮箱" width="180" sortable></el-table-column>
       <el-table-column prop="phone" label="电话" width="120" sortable></el-table-column>
       <el-table-column prop="password" label="密码" width="120" sortable></el-table-column>
@@ -55,6 +56,7 @@
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
           <el-row>
+            <!-- 编辑用户 -->
             <el-button
               @click="showEditUserDia(scope.row)"
               type="primary"
@@ -63,6 +65,7 @@
               size="mini"
               :plain="true"
             ></el-button>
+            <!-- 删除用户 -->
             <el-button
               @click="showDeleteUserBox(scope.row.userId)"
               type="danger"
@@ -71,6 +74,7 @@
               size="mini"
               :plain="true"
             ></el-button>
+            <!-- 分配角色 -->
             <el-button type="success" icon="el-icon-check" circle size="mini" :plain="true"></el-button>
           </el-row>
         </template>
@@ -120,6 +124,13 @@
         </el-form-item>
         <el-form-item label="手机号" prop="phone" label-width="100px">
           <el-input v-model="editUserForm.phone" autocomplete="off" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="角色" label-width="100px">
+          <!-- 当select的绑定值与value相同,默认显示对应label -->
+          <el-select v-model="editUserForm.roleId" >
+            <el-option label="区域一" :value="2"></el-option>
+            <el-option label="区域二" :value="1"></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -180,7 +191,8 @@ export default {
       editUserForm: {
         username: null,
         phone: null,
-        email: null
+        email: null,
+        roleId: null
       },
 
       /* 编辑用户id */
@@ -354,6 +366,7 @@ export default {
     showEditUserDia (user) {
       this.dialogFormVisibleEditUser = true
       this.editUserForm.username = user.username
+      this.editUserForm.roleId = user.roleId
       this.editUserForm.email = user.email
       this.editUserForm.phone = user.phone
       this.editUserId = user.userId
