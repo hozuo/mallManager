@@ -40,6 +40,7 @@
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.valid"
+            @change="updateUserValid([scope.row.userId,scope.row.valid])"
             :active-value="1"
             :inactive-value="0"
             active-color="#13ce66"
@@ -52,11 +53,25 @@
       <el-table-column prop="createTime" label="创建时间" width="180" sortable></el-table-column>
       <el-table-column prop="createUserStr" label="创建用户" width="120" sortable></el-table-column>
       <el-table-column label="操作" width="200">
-        <template>
+        <template slot-scope="scope">
           <el-row>
-            <el-button type="primary" icon="el-icon-edit" circle size="mini" :plain="true"></el-button>
+            <el-button
+              @click="showEditUserDia(scope.row)"
+              type="primary"
+              icon="el-icon-edit"
+              circle
+              size="mini"
+              :plain="true"
+            ></el-button>
+            <el-button
+              @click="showDeleteUserBox(scope.row.userId)"
+              type="danger"
+              icon="el-icon-delete"
+              circle
+              size="mini"
+              :plain="true"
+            ></el-button>
             <el-button type="success" icon="el-icon-check" circle size="mini" :plain="true"></el-button>
-            <el-button type="danger" icon="el-icon-delete" circle size="mini" :plain="true"></el-button>
           </el-row>
         </template>
       </el-table-column>
@@ -72,31 +87,44 @@
       :total="pageObject.total"
     ></el-pagination>
     <!-- 默认不显示 -->
-    <!-- 弹出表单 -->
+    <!-- 添加用户表单 -->
     <el-dialog title="添加用户" :visible.sync="dialogFormVisibleAddUser">
-      <el-form :model="AddUserForm" :rules="AddUserRules">
+      <el-form :model="addUserForm" :rules="AddUserRules">
         <el-form-item label="用户名" prop="username" label-width="100px">
-          <el-input v-model="AddUserForm.username" autocomplete="off" clearable></el-input>
+          <el-input v-model="addUserForm.username" autocomplete="off" clearable></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password" label-width="100px">
-          <el-input v-model="AddUserForm.password" autocomplete="off" clearable></el-input>
+          <el-input v-model="addUserForm.password" autocomplete="off" clearable></el-input>
         </el-form-item>
         <el-form-item label="电子邮箱" prop="email" label-width="100px">
-          <el-input v-model="AddUserForm.email" autocomplete="off" clearable></el-input>
+          <el-input v-model="addUserForm.email" autocomplete="off" clearable></el-input>
         </el-form-item>
         <el-form-item label="手机号" prop="phone" label-width="100px">
-          <el-input v-model="AddUserForm.phone" autocomplete="off" clearable></el-input>
+          <el-input v-model="addUserForm.phone" autocomplete="off" clearable></el-input>
         </el-form-item>
-        <!-- <el-form-item label="活动区域" label-width="100px">
-          <el-select v-model="AddUserForm.region" placeholder="请选择活动区域">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
-          </el-select>
-        </el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleAddUser = false">取 消</el-button>
         <el-button type="primary" @click="createUser()">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 编辑用户表单 -->
+    <el-dialog title="编辑用户" :visible.sync="dialogFormVisibleEditUser">
+      <el-form :model="editUserForm" :rules="editUserRules">
+        <el-form-item label="用户名" prop="username" label-width="100px">
+          <el-input v-model="editUserForm.username" autocomplete="off" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="电子邮箱" prop="email" label-width="100px">
+          <el-input v-model="editUserForm.email" autocomplete="off" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="手机号" prop="phone" label-width="100px">
+          <el-input v-model="editUserForm.phone" autocomplete="off" clearable></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleEditUser = false">取 消</el-button>
+        <el-button type="primary" @click="editUser()">确 定</el-button>
       </div>
     </el-dialog>
   </el-card>
@@ -137,34 +165,89 @@ export default {
       /* 添加用户对话框的可见属性 */
       dialogFormVisibleAddUser: false,
 
+      /* 编辑用户对话框的可见属性 */
+      dialogFormVisibleEditUser: false,
+
       /* 添加用户表单 */
-      AddUserForm: {
+      addUserForm: {
         username: null,
         password: null,
         phone: null,
         email: null
       },
 
-      // 限制规则
+      /* 编辑用户表单 */
+      editUserForm: {
+        username: null,
+        phone: null,
+        email: null
+      },
+
+      /* 编辑用户id */
+      editUserId: null,
+
+      // 添加用户限制规则
       AddUserRules: {
-        username: [{
-          required: true, message: '请输入活动名称', trigger: 'change'
-        }],
-        password: [{
-          required: true, message: '请输入密码', trigger: 'change'
-        }],
-        phone: [{
-          required: true, message: '请输入手机号码', trigger: 'change'
-        }],
-        email: [{
-          required: true, message: '请输入电子邮箱', trigger: 'change'
-        }]
+        username: [
+          {
+            required: true,
+            message: '请输入活动名称',
+            trigger: 'change'
+          }
+        ],
+        password: [
+          {
+            required: true,
+            message: '请输入密码',
+            trigger: 'change'
+          }
+        ],
+        phone: [
+          {
+            required: true,
+            message: '请输入手机号码',
+            trigger: 'change'
+          }
+        ],
+        email: [
+          {
+            required: true,
+            message: '请输入电子邮箱',
+            trigger: 'change'
+          }
+        ]
+      },
+
+      /* 编辑用户限制规则 */
+      editUserRules: {
+        username: [
+          {
+            required: true,
+            message: '请输入活动名称',
+            trigger: 'change'
+          }
+        ],
+        phone: [
+          {
+            required: true,
+            message: '请输入手机号码',
+            trigger: 'change'
+          }
+        ],
+        email: [
+          {
+            required: true,
+            message: '请输入电子邮箱',
+            trigger: 'change'
+          }
+        ]
       }
     }
   },
 
   /* 方法 */
   methods: {
+    // 获取用户列表
     async getUserList () {
       const res = await this.$http({
         url: 'http://api.ericson.top:2020/users',
@@ -190,33 +273,49 @@ export default {
       }
     },
 
-    // 分页方法
-    handleSizeChange (val) {
-      console.log(`每页 ${val} 条`)
-      this.pageQuery.pageSize = val
-      this.getUserList()
-    },
-    handleCurrentChange (val) {
-      console.log(`当前页: ${val}`)
-      this.pageQuery.pageCurrent = val
-      this.getUserList()
+    // 显示删除用户的提示框
+    showDeleteUserBox (id) {
+      this.$confirm('确认删除用户吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          this.deleteUser(id)
+        })
+        .catch(() => {
+          this.$message.info('已取消')
+        })
     },
 
-    // 排序
-    sort ({ column, prop, order }) {
-      console.log(column)
-      console.log(prop)
-      console.log(order)
-      this.pageQuery.orderBy = prop
-      if (order === 'descending') {
-        this.pageQuery.isASC = false
-      } else if (order === 'ascending') {
-        this.pageQuery.isASC = true
-      } else {
-        this.pageQuery.isASC = true
-        this.pageQuery.orderBy = 'userId'
+    /* 删除用户 */
+    async deleteUser (id) {
+      const res = await this.$http({
+        url: 'http://www.ericson.top:2020/user/' + id,
+        method: 'delete',
+        headers: {
+          token: localStorage.getItem('token')
+        },
+        transformRequest: [
+          data => {
+            // 对 data 进行任意转换处理
+            return this.$Qs.stringify(data)
+          }
+        ]
+      })
+      console.log(res)
+      const { status } = res.data
+      console.log(status)
+
+      // 判断返回正确结果
+      if (status === '200') {
+        this.$message.success('删除成功')
+        this.getUserList()
       }
-      this.getUserList()
+      if (status === '401') {
+        const { msg } = res.data
+        this.$message.warning(msg)
+      }
     },
 
     /* 添加用户 */
@@ -233,7 +332,7 @@ export default {
             return this.$Qs.stringify(data)
           }
         ],
-        data: this.AddUserForm
+        data: this.addUserForm
       })
       console.log(res)
       const { status } = res.data
@@ -243,10 +342,107 @@ export default {
       if (status === '200') {
         this.$message.success('创建用户成功')
         this.dialogFormVisibleAddUser = false
-      } if (status === '401') {
+        this.getUserList()
+      }
+      if (status === '401') {
         const { msg } = res.data
         this.$message.warning(msg)
       }
+    },
+
+    /* 显示编辑用户表单 */
+    showEditUserDia (user) {
+      this.dialogFormVisibleEditUser = true
+      this.editUserForm.username = user.username
+      this.editUserForm.email = user.email
+      this.editUserForm.phone = user.phone
+      this.editUserId = user.userId
+    },
+
+    /* 编辑用户 */
+    async editUser () {
+      const res = await this.$http({
+        url: 'http://www.ericson.top:2020/user/' + this.editUserId,
+        method: 'put',
+        headers: {
+          token: localStorage.getItem('token')
+        },
+        transformRequest: [
+          data => {
+            return this.$Qs.stringify(data)
+          }
+        ],
+        data: this.editUserForm
+      })
+      console.log(res)
+      const { status } = res.data
+      console.log(status)
+
+      // 判断返回正确结果
+      if (status === '200') {
+        this.$message.success('编辑用户成功')
+        this.getUserList()
+        this.dialogFormVisibleEditUser = false
+      }
+      if (status === '401') {
+        const { msg } = res.data
+        this.$message.warning(msg)
+      }
+    },
+
+    async updateUserValid ([userId, valid]) {
+      const res = await this.$http({
+        url: 'http://www.ericson.top:2020/user/' + userId + '/valid/' + valid,
+        method: 'put',
+        headers: {
+          token: localStorage.getItem('token')
+        },
+        transformRequest: [
+          data => {
+            return this.$Qs.stringify(data)
+          }
+        ]
+      })
+      console.log(res)
+      const { status } = res.data
+      console.log(status)
+
+      // 判断返回正确结果
+      if (status === '200') {
+        this.$message.success('修改用户状态成功')
+      } else {
+        const { msg } = res.data
+        this.$message.warning(msg)
+      }
+    },
+
+    /* 分页方法 */
+    handleSizeChange (val) {
+      console.log(`每页 ${val} 条`)
+      this.pageQuery.pageSize = val
+      this.getUserList()
+    },
+    handleCurrentChange (val) {
+      console.log(`当前页: ${val}`)
+      this.pageQuery.pageCurrent = val
+      this.getUserList()
+    },
+
+    // 排序方法
+    sort ({ column, prop, order }) {
+      console.log(column)
+      console.log(prop)
+      console.log(order)
+      this.pageQuery.orderBy = prop
+      if (order === 'descending') {
+        this.pageQuery.isASC = false
+      } else if (order === 'ascending') {
+        this.pageQuery.isASC = true
+      } else {
+        this.pageQuery.isASC = true
+        this.pageQuery.orderBy = 'userId'
+      }
+      this.getUserList()
     }
   },
 
