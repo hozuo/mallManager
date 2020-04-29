@@ -74,8 +74,6 @@
               size="mini"
               :plain="true"
             ></el-button>
-            <!-- 分配角色 -->
-            <el-button type="success" icon="el-icon-check" circle size="mini" :plain="true"></el-button>
           </el-row>
         </template>
       </el-table-column>
@@ -127,9 +125,13 @@
         </el-form-item>
         <el-form-item label="角色" label-width="100px">
           <!-- 当select的绑定值与value相同,默认显示对应label -->
-          <el-select v-model="editUserForm.roleId" >
-            <el-option label="区域一" :value="2"></el-option>
-            <el-option label="区域二" :value="1"></el-option>
+          <el-select v-model="editUserForm.roleId">
+            <el-option
+              v-for="(role,index) in rolelist"
+              :label="role.rolename"
+              :value="role.roleId"
+              :key="index"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -172,6 +174,15 @@ export default {
         pages: 0,
         records: ''
       },
+
+      rolelist: [
+        {
+          role: {
+            roleId: null,
+            rolename: null
+          }
+        }
+      ],
 
       /* 添加用户对话框的可见属性 */
       dialogFormVisibleAddUser: false,
@@ -365,11 +376,42 @@ export default {
     /* 显示编辑用户表单 */
     showEditUserDia (user) {
       this.dialogFormVisibleEditUser = true
+      this.getRolelist()
       this.editUserForm.username = user.username
       this.editUserForm.roleId = user.roleId
       this.editUserForm.email = user.email
       this.editUserForm.phone = user.phone
       this.editUserId = user.userId
+    },
+
+    /* 获取角色列表 */
+    async getRolelist () {
+      const res = await this.$http({
+        url: 'http://www.ericson.top:2020/roles',
+        method: 'get',
+        headers: {
+          token: localStorage.getItem('token')
+        },
+        transformRequest: [
+          data => {
+            return this.$Qs.stringify(data)
+          }
+        ]
+      })
+      console.log(res)
+      const { status } = res.data
+      console.log(status)
+
+      // 判断返回正确结果
+      if (status === '200') {
+        console.log('获取角色列表成功')
+        const { data } = res.data
+        console.log(data)
+        this.rolelist = data.records
+      } else {
+        const { msg } = res.data
+        this.$message.warning(msg)
+      }
     },
 
     /* 编辑用户 */
