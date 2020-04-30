@@ -26,6 +26,34 @@
       height="500px"
       style="width: 100%,"
     >
+      <!-- 表格行展开 -->
+      <el-table-column type="expand">
+        <template slot-scope="scope">
+          <el-form label-position="left" inline class="demo-table-expand">
+            <el-form-item label="商品名称">
+              <span>{{ scope.row.name }}</span>
+            </el-form-item>
+            <el-form-item label="所属店铺">
+              <span>{{ scope.row.shop }}</span>
+            </el-form-item>
+            <el-form-item label="商品 ID">
+              <span>{{ scope.row.id }}</span>
+            </el-form-item>
+            <el-form-item label="店铺 ID">
+              <span>{{ scope.row.shopId }}</span>
+            </el-form-item>
+            <el-form-item label="商品分类">
+              <span>{{ scope.row.category }}</span>
+            </el-form-item>
+            <el-form-item label="店铺地址">
+              <span>{{ scope.row.address }}</span>
+            </el-form-item>
+            <el-form-item label="商品描述">
+              <span>{{ scope.row.desc }}</span>
+            </el-form-item>
+          </el-form>
+        </template>
+      </el-table-column>
       <el-table-column prop="roleId" label="角色id" sortable="custom"></el-table-column>
       <el-table-column prop="rolename" label="角色名" sortable="custom"></el-table-column>
       <el-table-column prop="remark" label="备注" sortable="custom"></el-table-column>
@@ -36,7 +64,7 @@
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
           <el-row>
-          <!-- 编辑 -->
+            <!-- 编辑 -->
             <el-button
               @click="showEditUserDia(scope.row)"
               type="primary"
@@ -165,7 +193,6 @@ export default {
       // 组件可见性
       dialogFormVisibleAddRole: false,
       dialogFormVisibleEditRole: false
-
     }
   },
   created () {
