@@ -31,16 +31,10 @@ export default {
       const res = await this.$http({
         url: 'http://api.ericson.top:2020/user/login',
         method: 'post',
-        transformRequest: [
-          data => {
-            // 对 data 进行任意转换处理
-            return this.$Qs.stringify(data)
-          }
-        ],
         data: this.formdata
       })
 
-      console.log(res)
+      console.log(res.data)
 
       // 解构
       const { status } = res.data
@@ -52,15 +46,13 @@ export default {
         const { data, msg } = res.data
         console.log(data)
         console.log(msg)
-
         // 提示成功
         this.$message.success('登陆成功')
         // 存储token
         localStorage.setItem('token', data)
-
         // 跳转主页
         this.$router.push({ name: 'home' })
-      } else if (status === '205') {
+      } else {
         const { msg } = res.data
         this.$message.warning(msg)
       }

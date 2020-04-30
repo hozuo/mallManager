@@ -23,7 +23,7 @@
       @sort-change="sort"
       ref="multipleTable"
       :data="tableData"
-      height="420px"
+      height="500px"
       style="width: 100%,"
     >
       <el-table-column type="index" label="#" width="55"></el-table-column>
@@ -83,6 +83,7 @@
       :page-size="pageQuery.pageSize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="pageObject.total"
+      style="margin-top: 10px;"
     ></el-pagination>
     <!-- 默认不显示 -->
     <!-- 添加用户表单 -->
@@ -273,9 +274,6 @@ export default {
       const res = await this.$http({
         url: 'http://api.ericson.top:2020/users',
         method: 'get',
-        headers: {
-          token: localStorage.getItem('token')
-        },
         params: this.pageQuery
       })
 
@@ -291,6 +289,9 @@ export default {
         console.log(data)
         this.pageObject = data
         this.tableData = this.pageObject.records
+      } else if (status === '600') {
+        this.$message.warning('用户未登录')
+        this.$router.push('/login')
       }
     },
 
@@ -314,9 +315,6 @@ export default {
       const res = await this.$http({
         url: 'http://www.ericson.top:2020/user/' + id,
         method: 'delete',
-        headers: {
-          token: localStorage.getItem('token')
-        },
         transformRequest: [
           data => {
             // 对 data 进行任意转换处理
@@ -344,9 +342,6 @@ export default {
       const res = await this.$http({
         url: 'http://www.ericson.top:2020/user',
         method: 'post',
-        headers: {
-          token: localStorage.getItem('token')
-        },
         transformRequest: [
           data => {
             // 对 data 进行任意转换处理
@@ -386,15 +381,7 @@ export default {
     async getRolelist () {
       const res = await this.$http({
         url: 'http://www.ericson.top:2020/roles',
-        method: 'get',
-        headers: {
-          token: localStorage.getItem('token')
-        },
-        transformRequest: [
-          data => {
-            return this.$Qs.stringify(data)
-          }
-        ]
+        method: 'get'
       })
       console.log(res)
       const { status } = res.data
@@ -417,14 +404,6 @@ export default {
       const res = await this.$http({
         url: 'http://www.ericson.top:2020/user/' + this.editUserId,
         method: 'put',
-        headers: {
-          token: localStorage.getItem('token')
-        },
-        transformRequest: [
-          data => {
-            return this.$Qs.stringify(data)
-          }
-        ],
         data: this.editUserForm
       })
       console.log(res)
@@ -446,15 +425,7 @@ export default {
     async updateUserValid ([userId, valid]) {
       const res = await this.$http({
         url: 'http://www.ericson.top:2020/user/' + userId + '/valid/' + valid,
-        method: 'put',
-        headers: {
-          token: localStorage.getItem('token')
-        },
-        transformRequest: [
-          data => {
-            return this.$Qs.stringify(data)
-          }
-        ]
+        method: 'put'
       })
       console.log(res)
       const { status } = res.data
@@ -508,8 +479,6 @@ export default {
 </script>
 
 <style>
-.box-card {
-}
 .inputSearch {
   margin-top: 15px;
   margin-left: 0%;

@@ -10,7 +10,7 @@ import '@/plugins/element.js'
 import '@/plugins/http.js'
 
 // 导入全局依赖
-import Qs from 'qs'
+
 import moment from 'moment'
 
 // 导入样式
@@ -18,12 +18,9 @@ import '@/assets/css/reset.css'
 
 Vue.config.productionTip = false
 
-// 声明全局变量
-Vue.prototype.$Qs = Qs
-
 // 全局过滤器
 Vue.filter('fmtdate', (v) => {
-  return moment(v).format('YYYY-MM-DD')
+  return moment(v).format('YYYY-MM-DD HH:mm:ss')
 })
 
 // 声明全局组件
