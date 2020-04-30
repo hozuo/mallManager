@@ -77,7 +77,7 @@ export default {
   methods: {
     async getMenuList () {
       const res = await this.$http({
-        url: 'http://localhost:6002/menus',
+        url: 'http://localhost:2020/menus',
         method: 'get',
         params: this.pageQuery
       })
