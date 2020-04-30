@@ -2,7 +2,7 @@
   <!-- 卡片 -->
   <el-card class="box-card">
     <!-- 面包屑 -->
-    <my-bread :myBreadList='myBreadList'></my-bread>
+    <my-bread :myBreadList="myBreadList"></my-bread>
     <!-- 搜索 -->
     <el-row>
       <el-col :span="8">
@@ -27,13 +27,13 @@
       style="width: 100%,"
     >
       <el-table-column type="index" label="#" width="55"></el-table-column>
-      <el-table-column prop="userId" label="用户id" width="100" sortable></el-table-column>
-      <el-table-column prop="username" label="用户名" width="120" sortable></el-table-column>
-      <el-table-column prop="rolename" label="角色" width="120" sortable></el-table-column>
-      <el-table-column prop="email" label="电子邮箱" width="180" sortable></el-table-column>
-      <el-table-column prop="phone" label="电话" width="120" sortable></el-table-column>
-      <el-table-column prop="password" label="密码" width="120" sortable></el-table-column>
-      <el-table-column prop="valid" label="用户状态" width="120" sortable>
+      <el-table-column prop="userId" label="用户id" width="100" sortable="custom"></el-table-column>
+      <el-table-column prop="username" label="用户名" width="120" sortable="custom"></el-table-column>
+      <el-table-column prop="rolename" label="角色" width="120" sortable="custom"></el-table-column>
+      <el-table-column prop="email" label="电子邮箱" width="180" sortable="custom"></el-table-column>
+      <el-table-column prop="phone" label="电话" width="120" sortable="custom"></el-table-column>
+      <el-table-column prop="password" label="密码" width="120" sortable="custom"></el-table-column>
+      <el-table-column prop="valid" label="用户状态" width="120" sortable="custom">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.valid"
@@ -45,10 +45,10 @@
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column prop="updateTime" label="修改时间" width="180" sortable></el-table-column>
-      <el-table-column prop="updateUserStr" label="修改用户" width="120" sortable></el-table-column>
-      <el-table-column prop="createTime" label="创建时间" width="180" sortable></el-table-column>
-      <el-table-column prop="createUserStr" label="创建用户" width="120" sortable></el-table-column>
+      <el-table-column prop="updateTime" label="修改时间" width="180" sortable="custom"></el-table-column>
+      <el-table-column prop="updateUserStr" label="修改用户" width="120" sortable="custom"></el-table-column>
+      <el-table-column prop="createTime" label="创建时间" width="180" sortable="custom"></el-table-column>
+      <el-table-column prop="createUserStr" label="创建用户" width="120" sortable="custom"></el-table-column>
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
           <el-row>
