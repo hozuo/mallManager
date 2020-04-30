@@ -314,13 +314,7 @@ export default {
     async deleteUser (id) {
       const res = await this.$http({
         url: 'http://www.ericson.top:2020/user/' + id,
-        method: 'delete',
-        transformRequest: [
-          data => {
-            // 对 data 进行任意转换处理
-            return this.$Qs.stringify(data)
-          }
-        ]
+        method: 'delete'
       })
       console.log(res)
       const { status } = res.data
@@ -330,8 +324,7 @@ export default {
       if (status === '200') {
         this.$message.success('删除成功')
         this.getUserList()
-      }
-      if (status === '401') {
+      } else {
         const { msg } = res.data
         this.$message.warning(msg)
       }
@@ -342,12 +335,6 @@ export default {
       const res = await this.$http({
         url: 'http://www.ericson.top:2020/user',
         method: 'post',
-        transformRequest: [
-          data => {
-            // 对 data 进行任意转换处理
-            return this.$Qs.stringify(data)
-          }
-        ],
         data: this.addUserForm
       })
       console.log(res)
@@ -479,12 +466,4 @@ export default {
 </script>
 
 <style>
-.inputSearch {
-  margin-top: 15px;
-  margin-left: 0%;
-  width: 350px;
-}
-.inputSearchButton {
-  margin-top: 15px;
-}
 </style>
