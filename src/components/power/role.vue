@@ -29,29 +29,21 @@
       <!-- 表格行展开 -->
       <el-table-column type="expand">
         <template slot-scope="scope">
-          <el-form label-position="left" inline class="demo-table-expand">
-            <el-form-item label="商品名称">
-              <span>{{ scope.row.name }}</span>
-            </el-form-item>
-            <el-form-item label="所属店铺">
-              <span>{{ scope.row.shop }}</span>
-            </el-form-item>
-            <el-form-item label="商品 ID">
-              <span>{{ scope.row.id }}</span>
-            </el-form-item>
-            <el-form-item label="店铺 ID">
-              <span>{{ scope.row.shopId }}</span>
-            </el-form-item>
-            <el-form-item label="商品分类">
-              <span>{{ scope.row.category }}</span>
-            </el-form-item>
-            <el-form-item label="店铺地址">
-              <span>{{ scope.row.address }}</span>
-            </el-form-item>
-            <el-form-item label="商品描述">
-              <span>{{ scope.row.desc }}</span>
-            </el-form-item>
-          </el-form>
+          <el-row v-for="(item,i) in scope.row.menus" :key="i">
+            <el-col :span="4">
+              <el-tag>{{item.menuName}}</el-tag>
+            </el-col>
+            <el-col :span="20">
+              <el-row>
+                <el-col :span="4">
+                  <el-tag>{{"用户列表1"}}</el-tag>
+                  <el-tag>{{"用户列表2"}}</el-tag>
+                  <el-tag>{{"用户列表3"}}</el-tag>
+                </el-col>
+                <el-col :span="20"></el-col>
+              </el-row>
+            </el-col>
+          </el-row>
         </template>
       </el-table-column>
       <el-table-column prop="roleId" label="角色id" sortable="custom"></el-table-column>
@@ -141,7 +133,15 @@ export default {
       myBreadList: ['权限管理', '角色列表'],
 
       // 表格使用的数组
-      tableData: [],
+      tableData: [{
+        menus: [{
+          children: [{}],
+          menuId: 123,
+          menuName: 123,
+          parentId: 123,
+          type: 123
+        }]
+      }],
 
       // 分页查询参数
       pageQuery: {
@@ -223,6 +223,8 @@ export default {
         this.$message.warning('用户未登录')
         this.$router.push('/login')
       }
+      // 获取角色权限
+      this.getRoleMenus()
     },
 
     // 添加角色
@@ -333,6 +335,28 @@ export default {
         this.pageQuery.orderBy = 'roleId'
       }
       this.getRoleList()
+    },
+
+    // 获取角色权限
+    getRoleMenus () {
+      this.tableData.forEach(async element => {
+        const res = await this.$http({
+          url: 'http://localhost:2020/role/' + element.roleId + '/menus',
+          method: 'get',
+          params: this.pageQuery
+        })
+        // 解构
+        const { status, msg } = res.data
+        console.log(status)
+        console.log(msg)
+        // 判断返回正确结果
+        if (status === '200') {
+          const { data } = res.data
+          console.log(data)
+          element.menus = data
+          console.log(element.menu)
+        }
+      })
     }
   }
 }
