@@ -26,24 +26,45 @@
       height="500px"
       style="width: 100%,"
     >
-      <!-- 表格行展开 -->
+      <!-- 表格行展开,角色权限 -->
       <el-table-column type="expand">
         <template slot-scope="scope">
-          <el-row v-for="(item,i) in scope.row.menus" :key="i">
-            <el-col :span="4">
-              <el-tag>{{item.menuName}}</el-tag>
+          <!-- 一级菜单,根节点 -->
+          <el-row v-for="(item1,i) in scope.row.menus" :key="i">
+            <el-col :span="3">
+              <el-tag
+                @close="deleteRoleMenu(scope.row.roleId,item1.menuId)"
+                closable
+                type="warning"
+              >{{item1.menuName}}</el-tag>
+              <i v-if="item1.children.length!==0" class="el-icon-arrow-right"></i>
             </el-col>
-            <el-col :span="20">
-              <el-row>
-                <el-col :span="4">
-                  <el-tag>{{"用户列表1"}}</el-tag>
-                  <el-tag>{{"用户列表2"}}</el-tag>
-                  <el-tag>{{"用户列表3"}}</el-tag>
+            <el-col :span="21">
+              <!-- 二级菜单 -->
+              <el-row v-for="(item2,i) in item1.children" :key="i">
+                <el-col :span="3">
+                  <el-tag
+                    @close="deleteRoleMenu(scope.row.roleId,item2.menuId)"
+                    closable
+                  >{{item2.menuName}}</el-tag>
+                  <i v-if="item2.children.length!==0" class="el-icon-arrow-right"></i>
                 </el-col>
-                <el-col :span="20"></el-col>
+                <el-col :span="21">
+                  <!-- 三级菜单,叶子结点 -->
+                  <el-row>
+                    <el-tag
+                      @close="deleteRoleMenu(scope.row.roleId,item3.menuId)"
+                      closable
+                      type="success"
+                      v-for="(item3,i) in item2.children"
+                      :key="i"
+                    >{{item3.menuName}}</el-tag>
+                  </el-row>
+                </el-col>
               </el-row>
             </el-col>
           </el-row>
+          <span v-if="scope.row.menus===undefind">未分配权限</span>
         </template>
       </el-table-column>
       <el-table-column prop="roleId" label="角色id" sortable="custom"></el-table-column>
@@ -58,7 +79,7 @@
           <el-row>
             <!-- 编辑 -->
             <el-button
-              @click="showEditUserDia(scope.row)"
+              @click="showEditRoleDia(scope.row)"
               type="primary"
               icon="el-icon-edit"
               circle
@@ -107,14 +128,14 @@
       </div>
     </el-dialog>
 
-    <!-- 编辑用户表单 -->
+    <!-- 编辑角色表单 -->
     <el-dialog title="编辑角色" :visible.sync="dialogFormVisibleEditRole">
       <el-form :model="roleForm" :rules="roleRules">
         <el-form-item label="角色名称" prop="rolename" label-width="100px">
-          <el-input v-model="roleForm.username" autocomplete="off" clearable></el-input>
+          <el-input v-model="roleForm.rolename" autocomplete="off" clearable></el-input>
         </el-form-item>
         <el-form-item label="角色描述" prop="remark" label-width="100px">
-          <el-input v-model="roleForm.password" autocomplete="off" clearable></el-input>
+          <el-input v-model="roleForm.remark" autocomplete="off" clearable></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -133,15 +154,19 @@ export default {
       myBreadList: ['权限管理', '角色列表'],
 
       // 表格使用的数组
-      tableData: [{
-        menus: [{
-          children: [{}],
-          menuId: 123,
-          menuName: 123,
-          parentId: 123,
-          type: 123
-        }]
-      }],
+      tableData: [
+        {
+          menus: [
+            {
+              children: [{}],
+              menuId: null,
+              menuName: null,
+              parentId: null,
+              type: null
+            }
+          ]
+        }
+      ],
 
       // 分页查询参数
       pageQuery: {
@@ -168,6 +193,7 @@ export default {
 
       /* 添加角色表单 */
       roleForm: {
+        roleId: null,
         rolename: null,
         remark: null
       },
@@ -251,10 +277,18 @@ export default {
       }
     },
 
+    // 显示编辑角色表单
+    showEditRoleDia (role) {
+      this.dialogFormVisibleEditRole = true
+      this.roleForm.roleId = role.roleId
+      this.roleForm.rolename = role.rolename
+      this.roleForm.remark = role.remark
+    },
+
     // 编辑角色
     async editRole () {
       const res = await this.$http({
-        url: 'http://www.ericson.top:2020/role/' + this.editRoleId,
+        url: 'http://www.ericson.top:2020/role/' + this.roleForm.roleId,
         method: 'put',
         data: this.roleForm
       })
@@ -357,6 +391,28 @@ export default {
           console.log(element.menu)
         }
       })
+    },
+
+    // 删除角色的权限
+    async deleteRoleMenu (roleId, menuId) {
+      const res = await this.$http({
+        url: 'http://api.ericson.top:2020/role/' + roleId + '/menus/' + menuId,
+        method: 'delete'
+      })
+
+      // 解构
+      const { status, msg, data } = res.data
+      console.log(status)
+      console.log(msg)
+
+      // 判断返回正确结果
+      if (status === '200') {
+        this.$message.success(data)
+        this.getRoleList()
+      } else if (status === '600') {
+        this.$message.warning('用户未登录')
+        this.$router.push('/login')
+      }
     }
   }
 }
