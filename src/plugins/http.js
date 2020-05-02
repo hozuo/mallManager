@@ -18,7 +18,7 @@ MyHttpServer.install = (Vue) => {
     // 数据处理
     config.transformRequest = [
       data => {
-        return Qs.stringify(data)
+        return Qs.stringify(data, {arrayFormat: 'repeat'})
       }
     ]
     // 添加token

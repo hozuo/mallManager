@@ -95,6 +95,15 @@
               size="mini"
               :plain="true"
             ></el-button>
+            <!-- 编辑权限 -->
+            <el-button
+              @click="showEditRoleMenuDia(scope.row)"
+              type="success"
+              icon="el-icon-check"
+              circle
+              size="mini"
+              :plain="true"
+            ></el-button>
           </el-row>
         </template>
       </el-table-column>
@@ -112,7 +121,7 @@
     ></el-pagination>
 
     <!-- 默认不显示 -->
-    <!-- 添加角色表单 -->
+    <!-- 添加角色对话框 -->
     <el-dialog title="添加角色" :visible.sync="dialogFormVisibleAddRole">
       <el-form :model="roleForm" :rules="roleRules">
         <el-form-item label="角色名称" prop="rolename" label-width="100px">
@@ -128,7 +137,7 @@
       </div>
     </el-dialog>
 
-    <!-- 编辑角色表单 -->
+    <!-- 编辑角色对话框 -->
     <el-dialog title="编辑角色" :visible.sync="dialogFormVisibleEditRole">
       <el-form :model="roleForm" :rules="roleRules">
         <el-form-item label="角色名称" prop="rolename" label-width="100px">
@@ -141,6 +150,23 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleEditRole = false">取 消</el-button>
         <el-button type="primary" @click="editRole()">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 编辑角色权限对话框 -->
+    <el-dialog title="修改角色权限" :visible.sync="dialogFormVisibleEditRoleMenu">
+      <el-tree
+        :data="menuTreeList"
+        show-checkbox
+        node-key="menuId"
+        :default-expanded-keys="menuTreeExpandedKeys"
+        :default-checked-keys="menuTreeCheckedKeys"
+        :props="menuTreeProps"
+        ref="menuTree"
+      ></el-tree>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleEditRoleMenu = false">取 消</el-button>
+        <el-button type="primary" @click="editRoleMenu()">确 定</el-button>
       </div>
     </el-dialog>
   </el-card>
@@ -191,7 +217,7 @@ export default {
         records: ''
       },
 
-      /* 添加角色表单 */
+      /* 当前编辑的角色表单(多用途临时数据容器) */
       roleForm: {
         roleId: null,
         rolename: null,
@@ -216,12 +242,29 @@ export default {
         ]
       },
 
+      // 权限树的参数
+      menuTreeProps: {
+        children: 'children',
+        label: 'menuName'
+      },
+
+      // 权限树展示数组
+      menuTreeList: null,
+
+      // 默认展开的数组(全部)
+      menuTreeExpandedKeys: [],
+
+      // 默认选中的数组
+      menuTreeCheckedKeys: [],
+
       // 组件可见性
       dialogFormVisibleAddRole: false,
-      dialogFormVisibleEditRole: false
+      dialogFormVisibleEditRole: false,
+      dialogFormVisibleEditRoleMenu: false
     }
   },
   created () {
+    // 获取角色列表
     this.getRoleList()
   },
   methods: {
@@ -336,6 +379,84 @@ export default {
       if (status === '200') {
         this.$message.success('删除成功')
         this.getRoleList()
+      } else {
+        const { msg } = res.data
+        this.$message.warning(msg)
+      }
+    },
+
+    // 显示修改角色权限对话框
+    async showEditRoleMenuDia (role) {
+      console.log('showEditRoleMenuDia')
+      // 获取全权限树
+      const res = await this.$http({
+        url: 'http://api.ericson.top:2020/menus',
+        method: 'get',
+        params: {
+          type: 'tree'
+        }
+      })
+      const { status, msg } = res.data
+      console.log(status)
+      console.log(msg)
+      // 判断返回正确结果
+      if (status === '200') {
+        const { data } = res.data
+        console.log(data)
+        // 此时的data是infoList
+        this.menuTreeList = data
+      } else {
+        this.$message.warning(msg)
+      }
+      // 设置默认展开列表
+      var arrTempExpanded = []
+      this.menuTreeList.forEach(item1 => {
+        arrTempExpanded.push(item1.menuId)
+        item1.children.forEach(item2 => {
+          arrTempExpanded.push(item2.menuId)
+        })
+      })
+      this.menuTreeExpandedKeys = arrTempExpanded
+
+      // 设置默认选中列表
+      var arrTempChecked = []
+      if (role.menus !== null && role.menus !== undefined) {
+        role.menus.forEach(item1 => {
+          item1.children.forEach(item2 => {
+            item2.children.forEach(item3 => {
+              arrTempChecked.push(item3.menuId)
+            })
+          })
+        })
+      }
+      this.menuTreeCheckedKeys = arrTempChecked
+
+      // 设置当前用户id到全局的数据容器中,供提交表单时使用
+      this.roleForm.roleId = role.roleId
+
+      this.dialogFormVisibleEditRoleMenu = true
+    },
+
+    // 修改角色权限
+    async editRoleMenu () {
+      // 定义该角色当前选中的idSet
+      let arr1 = this.$refs.menuTree.getCheckedKeys()
+      let arr2 = this.$refs.menuTree.getHalfCheckedKeys()
+      var arrTempMenuIdSet = [...arr1, ...arr2]
+
+      const res = await this.$http.put(
+        'http://localhost:2020/role/' + this.roleForm.roleId + '/menus',
+        { menuId: arrTempMenuIdSet }
+      )
+
+      const { status } = res.data
+      console.log(status)
+
+      // 判断返回正确结果
+      if (status === '200') {
+        this.$message.success('修改角色权限成功')
+        this.getRoleList()
+        this.dialogFormVisibleEditRoleMenu = false
       } else {
         const { msg } = res.data
         this.$message.warning(msg)
