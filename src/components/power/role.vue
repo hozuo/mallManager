@@ -30,7 +30,7 @@
       <el-table-column type="expand">
         <template slot-scope="scope">
           <!-- 一级菜单,根节点 -->
-          <el-row v-for="(item1,i) in scope.row.menus" :key="i">
+          <el-row style="margin-bottom:7px" v-for="(item1,i) in scope.row.menus" :key="i">
             <el-col :span="3">
               <el-tag
                 @close="deleteRoleMenu(scope.row.roleId,item1.menuId)"
@@ -41,7 +41,7 @@
             </el-col>
             <el-col :span="21">
               <!-- 二级菜单 -->
-              <el-row v-for="(item2,i) in item1.children" :key="i">
+              <el-row style="margin-bottom:8px" v-for="(item2,i) in item1.children" :key="i">
                 <el-col :span="3">
                   <el-tag
                     @close="deleteRoleMenu(scope.row.roleId,item2.menuId)"
@@ -58,6 +58,7 @@
                       type="success"
                       v-for="(item3,i) in item2.children"
                       :key="i"
+                      style="margin-right:6px"
                     >{{item3.menuName}}</el-tag>
                   </el-row>
                 </el-col>
@@ -288,9 +289,8 @@ export default {
         console.log(data)
         this.pageObject = data
         this.tableData = this.pageObject.records
-      } else if (status === '600') {
-        this.$message.warning('用户未登录')
-        this.$router.push('/login')
+      } else {
+        this.$message.warning(msg)
       }
       // 获取角色权限
       this.getRoleMenus()
@@ -530,9 +530,8 @@ export default {
       if (status === '200') {
         this.$message.success(data)
         this.getRoleList()
-      } else if (status === '600') {
-        this.$message.warning('用户未登录')
-        this.$router.push('/login')
+      } else {
+        this.$message.warning(msg)
       }
     }
   }

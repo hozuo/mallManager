@@ -9,9 +9,11 @@ import User from '@/components/user/user.vue'
 import Role from '@/components/power/role.vue'
 import Menu from '@/components/power/menu.vue'
 
+import { Message } from 'element-ui'
+
 Vue.use(Router)
 
-export default new Router({
+var router = new Router({
   routes: [
     {
       name: 'login',
@@ -37,3 +39,18 @@ export default new Router({
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.path === '/login') {
+    next()
+    return
+  }
+  const token = localStorage.getItem('token')
+  if (!token) {
+    Message.warning('用户未登录')
+    router.push({ name: 'login' })
+  }
+  next()
+})
+
+export default router

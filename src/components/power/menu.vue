@@ -4,8 +4,8 @@
     <my-bread :myBreadList="myBreadList"></my-bread>
     <!-- 卡片视图 -->
 
-    <el-table :data="pageObject.records" border stripe style="margin-top: 15px">
-      <el-table-column label="#" prop="menuId"></el-table-column>
+    <el-table :data="pageObject.records" style="margin-top: 15px">
+      <el-table-column label="#" prop="menuId" width="60"></el-table-column>
       <el-table-column label="权限名称" prop="menuName"></el-table-column>
       <el-table-column label="路径" prop="url"></el-table-column>
       <el-table-column label="备注" prop="remark"></el-table-column>

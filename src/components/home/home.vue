@@ -30,55 +30,18 @@
     <el-container>
       <!-- 侧栏 -->
       <el-aside width="200px">
-        <el-menu
-          :unique-opened="true"
-          :collapse-transition="false"
-          :router="true"
-        >
+        <el-menu :unique-opened="true" :collapse-transition="false" :router="true">
           <!-- 导航1 -->
-          <el-submenu index="1">
+          <el-submenu v-for="(item1,index) in menuList" :key="index" :index="item1.sort">
             <template slot="title">
               <i class="el-icon-menu"></i>
-              <span>用户管理</span>
+              <span>{{item1.menuName}}</span>
             </template>
-            <el-menu-item index="/user">用户列表</el-menu-item>
-          </el-submenu>
-          <!-- 导航2 -->
-          <el-submenu index="2">
-            <template slot="title">
-              <i class="el-icon-menu"></i>
-              <span>权限管理</span>
-            </template>
-            <el-menu-item index="/role">角色列表</el-menu-item>
-            <el-menu-item index="/menu">权限列表</el-menu-item>
-          </el-submenu>
-          <!-- 导航3 -->
-          <el-submenu index="3">
-            <template slot="title">
-              <i class="el-icon-menu"></i>
-              <span>商品管理</span>
-            </template>
-            <el-menu-item index="3-1">商品列表</el-menu-item>
-            <el-menu-item index="3-2">分类参数</el-menu-item>
-            <el-menu-item index="3-2">商品分类</el-menu-item>
-          </el-submenu>
-          <!-- 导航4 -->
-          <el-submenu index="4">
-            <template slot="title">
-              <i class="el-icon-menu"></i>
-              <span>订单管理</span>
-            </template>
-            <el-menu-item index="2-1">订单列表</el-menu-item>
-            <el-menu-item index="2-2">选项2</el-menu-item>
-          </el-submenu>
-          <!-- 导航5 -->
-          <el-submenu index="5">
-            <template slot="title">
-              <i class="el-icon-menu"></i>
-              <span>数据统计</span>
-            </template>
-            <el-menu-item index="2-1">选项1</el-menu-item>
-            <el-menu-item index="2-2">选项2</el-menu-item>
+            <el-menu-item
+              v-for="(item2,index) in item1.children"
+              :key="index"
+              :index="item2.url"
+            >{{item2.menuName}}</el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>
@@ -93,27 +56,44 @@
 <script>
 export default {
   data () {
-    return {}
+    return { menuList: [] }
   },
   methods: {
+    // 退出
     doSingout () {
       // 清除tocken
       localStorage.clear()
       this.$message.success('退出成功')
       // 转到login
       this.$router.push({ name: 'login' })
+    },
+
+    // 获取左侧菜单列表
+    async getMenuList () {
+      const res = await this.$http({
+        url: 'http://localhost:2020/menus',
+        method: 'get',
+        params: { type: 'menu' }
+      })
+
+      // 解构
+      const { status, msg } = res.data
+      console.log(status)
+      console.log(msg)
+
+      // 判断返回正确结果
+      if (status === '200') {
+        // 解构
+        const { data } = res.data
+        console.log(data)
+        this.menuList = data
+      } else {
+        this.$message.warning(msg)
+      }
     }
-  },
-  beforeCreate () {
-    const token = localStorage.getItem('token')
-    if (!token) {
-      this.$message('用户未登录')
-      this.$router.push({ name: 'login' })
-    }
-    // TODO判断token是否合法 暂时全部合法
-    // this.$http.get('#',token)
   },
   mounted () {
+    this.getMenuList()
   }
 }
 </script>
