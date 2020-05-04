@@ -32,7 +32,7 @@
       <el-aside width="200px">
         <el-menu :unique-opened="true" :collapse-transition="false" :router="true">
           <!-- 导航1 -->
-          <el-submenu v-for="(item1,index) in menuList" :key="index" :index="''+item1.sort">
+          <el-submenu v-for="(item1,index) in menuList" :key="index" :index="''+item1.sort" default-active>
             <template slot="title">
               <i class="el-icon-menu"></i>
               <span>{{item1.menuName}}</span>

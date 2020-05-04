@@ -8,7 +8,8 @@ import Home from '@/components/home/home.vue'
 import User from '@/components/user/user.vue'
 import Role from '@/components/power/role.vue'
 import Menu from '@/components/power/menu.vue'
-import Cat from '@/components/item/cat.vue'
+import Cat from '@/components/data/cat.vue'
+import Store from '@/components/data/store.vue'
 
 import { Message } from 'element-ui'
 
@@ -40,6 +41,10 @@ var router = new Router({
         name: 'cat',
         path: '/cat',
         component: Cat
+      }, {
+        name: 'store',
+        path: '/store',
+        component: Store
       }]
     }
   ]

@@ -14,7 +14,7 @@
         <el-button
           class="inputSearchButton"
           type="success"
-          @click="dialogFormVisibleAddUser = true"
+          @click="showAddUserDia()"
         >添加用户</el-button>
       </el-col>
     </el-row>
@@ -26,7 +26,6 @@
       height="500px"
       style="width: 100%,"
     >
-      <el-table-column type="index" label="#" width="55"></el-table-column>
       <el-table-column prop="userId" label="用户id" width="100" sortable="custom"></el-table-column>
       <el-table-column prop="username" label="用户名" width="120" sortable="custom"></el-table-column>
       <el-table-column prop="rolename" label="角色" width="120" sortable="custom"></el-table-column>
@@ -100,6 +99,17 @@
         </el-form-item>
         <el-form-item label="手机号" prop="phone" label-width="100px">
           <el-input v-model="addUserForm.phone" autocomplete="off" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="角色" label-width="100px">
+          <!-- 当select的绑定值与value相同,默认显示对应label -->
+          <el-select v-model="addUserForm.roleId">
+            <el-option
+              v-for="(role,index) in rolelist"
+              :label="role.rolename"
+              :value="role.roleId"
+              :key="index"
+            ></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -330,8 +340,16 @@ export default {
       }
     },
 
+    async showAddUserDia () {
+      this.dialogFormVisibleAddUser = true
+      this.getRolelist()
+    },
+
     /* 添加用户 */
     async createUser () {
+      this.addUserForm.valid = 1
+      this.addUserForm.salt = ''
+      this.addUserForm.invitation = ''
       const res = await this.$http({
         url: 'http://www.ericson.top:2020/user',
         method: 'post',
