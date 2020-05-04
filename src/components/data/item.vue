@@ -268,8 +268,6 @@ export default {
         this.tableData = this.pageObject.records
       } else {
         console.log(msg)
-
-        // console.log(msg)
       }
     },
 
