@@ -23,6 +23,10 @@ Vue.filter('fmtdate', (v) => {
   return moment(v).format('YYYY-MM-DD HH:mm:ss')
 })
 
+Vue.filter('money', (v) => {
+  return v / 100
+})
+
 // 声明全局组件
 Vue.component('my-bread', MyBread)
 

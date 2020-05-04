@@ -26,8 +26,12 @@
       <el-table-column prop="itemName" label="商品名" width="130" sortable="custom"></el-table-column>
       <el-table-column prop="sn" label="编号" width="130" sortable="custom"></el-table-column>
       <el-table-column prop="catStr" label="分类" sortable="custom"></el-table-column>
-      <el-table-column prop="buyPrice" label="采购价" width="100" sortable="custom"></el-table-column>
-      <el-table-column prop="salePrice" label="销售价" width="100" sortable="custom"></el-table-column>
+      <el-table-column prop="buyPrice" label="采购价" width="100" sortable="custom">
+         <template slot-scope="scope">{{scope.row.buyPrice|money}}</template>
+      </el-table-column>
+      <el-table-column prop="salePrice" label="销售价" width="100" sortable="custom">
+         <template slot-scope="scope">{{scope.row.salePrice|money}}</template>
+      </el-table-column>
       <el-table-column prop="remark" label="备注" width="400" sortable="custom"></el-table-column>
       <el-table-column prop="updateUserStr" label="修改用户" width="100" sortable="custom"></el-table-column>
       <el-table-column prop="updateTime" label="修改时间" width="180" sortable="custom"></el-table-column>
@@ -119,9 +123,6 @@
         <el-form-item label="商品编号" prop="sn" label-width="100px">
           <el-input v-model="editItemForm.sn" autocomplete="off" clearable></el-input>
         </el-form-item>
-        <el-form-item label="商品分类" prop="catStr" label-width="100px">
-          <el-input v-model="editItemForm.catStr" autocomplete="off" clearable></el-input>
-        </el-form-item>
         <el-form-item label="采购价" prop="buyPrice" label-width="100px">
           <el-input v-model="editItemForm.buyPrice" autocomplete="off" clearable></el-input>
         </el-form-item>
@@ -131,7 +132,7 @@
         <el-form-item label="备注" prop="remark" label-width="100px">
           <el-input v-model="editItemForm.remark" autocomplete="off" clearable></el-input>
         </el-form-item>
-        <el-form-item label="分类" label-width="100px">
+        <el-form-item label="商品分类" label-width="100px">
           <!-- 当select的绑定值与value相同,默认显示对应label -->
           <el-select v-model="editItemForm.catId">
             <el-option
@@ -297,6 +298,8 @@ export default {
 
     // 添加商品
     async createItem () {
+      this.createItemForm.buyPrice *= 100
+      this.createItemForm.salePrice *= 100
       const res = await this.$http({
         url: 'http://www.ericson.top:6002/item',
         method: 'post',
@@ -330,13 +333,16 @@ export default {
       this.editItemForm.sn = item.sn
       this.editItemForm.catId = item.catId
       this.editItemForm.catStr = item.catStr
-      this.editItemForm.buyPrice = item.buyPrice
-      this.editItemForm.salePrice = item.salePrice
+      this.editItemForm.buyPrice = item.buyPrice / 100
+      this.editItemForm.salePrice = item.salePrice / 100
       this.editItemForm.remark = item.remark
     },
 
     // 编辑商品
     async editItem () {
+      this.dialogFormVisibleEditItem = false
+      this.editItemForm.buyPrice *= 100
+      this.editItemForm.salePrice *= 100
       const res = await this.$http({
         url: 'http://www.ericson.top:6002/item/' + this.editItemId,
         method: 'put',
@@ -357,7 +363,6 @@ export default {
         this.editItemForm.buyPrice = ''
         this.editItemForm.salePrice = ''
         this.editItemForm.remark = ''
-        this.dialogFormVisibleEditItem = false
         this.getItemList()
       } else {
         const { msg } = res.data

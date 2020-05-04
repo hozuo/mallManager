@@ -73,12 +73,12 @@
     <!-- 默认不显示 -->
     <!-- 添加商品分类对话框 -->
     <el-dialog title="添加商品分类" :visible.sync="dialogFormVisibleAddCat">
-      <el-form :model="catFormCreate" :rules="catRules">
+      <el-form :model="createCatForm" :rules="catRules">
         <el-form-item label="分类名称" prop="catName" label-width="100px">
-          <el-input v-model="catFormCreate.catName" autocomplete="off" clearable></el-input>
+          <el-input v-model="createCatForm.catName" autocomplete="off" clearable></el-input>
         </el-form-item>
         <el-form-item label="分类描述" prop="remark" label-width="100px">
-          <el-input v-model="catFormCreate.remark" autocomplete="off" clearable></el-input>
+          <el-input v-model="createCatForm.remark" autocomplete="off" clearable></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -146,7 +146,7 @@ export default {
       },
 
       // 新增使用的数据
-      catFormCreate: {
+      createCatForm: {
         catId: null,
         catName: null,
         remark: null
@@ -212,7 +212,7 @@ export default {
       const res = await this.$http({
         url: 'http://www.ericson.top:6002/cat',
         method: 'post',
-        data: this.catFormCreate
+        data: this.createCatForm
       })
       console.log(res)
       const { status } = res.data
@@ -221,6 +221,9 @@ export default {
       // 判断返回正确结果
       if (status === '200') {
         this.$message.success('添加商品分类成功')
+        this.createCatForm.catId = ''
+        this.createCatForm.catName = ''
+        this.createCatForm.remark = ''
         this.dialogFormVisibleAddCat = false
         this.getCatList()
       } else {
