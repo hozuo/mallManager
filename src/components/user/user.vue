@@ -336,7 +336,7 @@ export default {
         this.getUserList()
       } else {
         const { msg } = res.data
-        this.$message.warning(msg)
+        console.log(msg)
       }
     },
 
@@ -367,7 +367,7 @@ export default {
       }
       if (status === '401') {
         const { msg } = res.data
-        this.$message.warning(msg)
+        console.log(msg)
       }
     },
 
@@ -400,7 +400,7 @@ export default {
         this.rolelist = data.records
       } else {
         const { msg } = res.data
-        this.$message.warning(msg)
+        console.log(msg)
       }
     },
 
@@ -423,7 +423,7 @@ export default {
       }
       if (status === '401') {
         const { msg } = res.data
-        this.$message.warning(msg)
+        console.log(msg)
       }
     },
 
@@ -441,7 +441,7 @@ export default {
         this.$message.success('修改用户状态成功')
       } else {
         const { msg } = res.data
-        this.$message.warning(msg)
+        console.log(msg)
       }
     },
 

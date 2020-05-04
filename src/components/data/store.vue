@@ -237,7 +237,7 @@ export default {
       } else {
         console.log(msg)
 
-        // this.$message.warning(msg)
+        // console.log(msg)
       }
     },
 
@@ -286,7 +286,7 @@ export default {
         this.getStoreList()
       } else {
         const { msg } = res.data
-        this.$message.warning(msg)
+        console.log(msg)
       }
     },
 
@@ -323,7 +323,7 @@ export default {
         this.getStoreList()
       } else {
         const { msg } = res.data
-        this.$message.warning(msg)
+        console.log(msg)
       }
     },
 
@@ -358,7 +358,7 @@ export default {
         this.getStoreList()
       } else {
         const { msg } = res.data
-        this.$message.warning(msg)
+        console.log(msg)
       }
     },
 

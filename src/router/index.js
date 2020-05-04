@@ -10,6 +10,7 @@ import Role from '@/components/power/role.vue'
 import Menu from '@/components/power/menu.vue'
 import Cat from '@/components/data/cat.vue'
 import Store from '@/components/data/store.vue'
+import Item from '@/components/data/item.vue'
 
 import { Message } from 'element-ui'
 
@@ -45,6 +46,10 @@ var router = new Router({
         name: 'store',
         path: '/store',
         component: Store
+      }, {
+        name: 'item',
+        path: '/item',
+        component: Item
       }]
     }
   ]

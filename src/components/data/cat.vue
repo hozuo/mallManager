@@ -110,7 +110,7 @@ export default {
   data () {
     return {
       // 面包屑参数
-      myBreadList: ['商品管理', '商品分类'],
+      myBreadList: ['基础信息管理', '商品分类'],
 
       // 表格使用的数组
       tableData: [],
@@ -203,7 +203,7 @@ export default {
       } else {
         console.log(msg)
 
-        // this.$message.warning(msg)
+        // console.log(msg)
       }
     },
 
@@ -225,7 +225,7 @@ export default {
         this.getCatList()
       } else {
         const { msg } = res.data
-        this.$message.warning(msg)
+        console.log(msg)
       }
     },
 
@@ -257,7 +257,7 @@ export default {
         this.getCatList()
       } else {
         const { msg } = res.data
-        this.$message.warning(msg)
+        console.log(msg)
       }
     },
 
@@ -292,7 +292,7 @@ export default {
         this.getCatList()
       } else {
         const { msg } = res.data
-        this.$message.warning(msg)
+        console.log(msg)
       }
     },
 
