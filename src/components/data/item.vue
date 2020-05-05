@@ -84,9 +84,6 @@
         <el-form-item label="商品编号" prop="sn" label-width="100px">
           <el-input v-model="createItemForm.sn" autocomplete="off" clearable></el-input>
         </el-form-item>
-        <el-form-item label="商品分类" prop="catStr" label-width="100px">
-          <el-input v-model="createItemForm.catStr" autocomplete="off" clearable></el-input>
-        </el-form-item>
         <el-form-item label="采购价" prop="buyPrice" label-width="100px">
           <el-input v-model="createItemForm.buyPrice" autocomplete="off" clearable></el-input>
         </el-form-item>
@@ -306,7 +303,7 @@ export default {
       console.log(res)
       const { status } = res.data
       console.log(status)
-
+      this.dialogFormVisibleAddItem = false
       // 判断返回正确结果
       if (status === '200') {
         this.$message.success('添加商品成功')
@@ -314,7 +311,7 @@ export default {
         this.createItemForm.sn = ''
         this.createItemForm.catId = ''
         this.createItemForm.addr = ''
-        this.dialogFormVisibleAddItem = false
+
         this.getItemList()
       } else {
         const { msg } = res.data
