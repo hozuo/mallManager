@@ -25,7 +25,7 @@
       <el-table-column prop="stock" label="实时库存" width="110" sortable="custom"></el-table-column>
       <el-table-column prop="inState" label="流程状态" width="110" sortable="custom"></el-table-column>
       <el-table-column prop="num" label="数量" sortable="custom"></el-table-column>
-      <el-table-column prop="inTime" label="入库时间" width="170" sortable="custom"></el-table-column>
+      <el-table-column prop="inTime" label="入库日期" width="140" sortable="custom"></el-table-column>
       <el-table-column prop="updateUserStr" label="修改用户" width="110" sortable="custom"></el-table-column>
       <el-table-column prop="updateTime" label="修改时间" sortable="custom" width="180"></el-table-column>
       <el-table-column prop="createUserStr" label="创建用户" width="110" sortable="custom"></el-table-column>
@@ -70,7 +70,7 @@
     <!-- 默认不显示 -->
     <!-- 添加入库流水对话框 -->
     <el-dialog title="添加入库流水" :visible.sync="dialogFormVisibleAddInstock">
-      <el-form :model="createInstockForm" :rules="instockRules">
+      <el-form :model="createInstockForm">
         <el-form-item label="仓库名" prop="storeStr" label-width="100px">
           <!-- 当select的绑定值与value相同,默认显示对应label -->
           <el-select v-model="createInstockForm.storeId">
@@ -124,19 +124,55 @@
 
     <!-- 编辑入库流水对话框 -->
     <el-dialog title="编辑入库流水" :visible.sync="dialogFormVisibleEditInstock">
-      <el-form :model="editInstockForm" :rules="instockRules">
-        <el-form-item label="入库流水名称" prop="instockName" label-width="100px">
-          <el-input v-model="editInstockForm.instockName" autocomplete="off" clearable></el-input>
-        </el-form-item>
-        <el-form-item label="入库流水编号" prop="sn" label-width="100px">
+      <el-form :model="editInstockForm">
+        <el-form-item label="编号" prop="sn" label-width="100px">
           <el-input v-model="editInstockForm.sn" autocomplete="off" clearable></el-input>
         </el-form-item>
-        <el-form-item label="入库流水地址" prop="addr" label-width="100px">
-          <el-input v-model="editInstockForm.addr" autocomplete="off" clearable></el-input>
-        </el-form-item>
-        <el-form-item label="角色" label-width="100px">
+        <el-form-item label="仓库名" prop="storeStr" label-width="100px">
           <!-- 当select的绑定值与value相同,默认显示对应label -->
-          <el-select v-model="editInstockForm.managerId">
+          <el-select v-model="editInstockForm.storeId">
+            <el-option
+              v-for="(store,index) in storeList"
+              :label="store.storeName"
+              :value="store.storeId"
+              :key="index"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="入库时间" label-width="100px">
+          <el-date-picker
+            v-model="editInstockForm.inTime"
+            type="date"
+            placeholder="选择日期"
+            format="yyyy 年 MM 月 dd 日"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="采购订单号" prop="buyId" label-width="100px">
+          <el-input v-model="editInstockForm.buyId" autocomplete="off" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="数量" prop="num" label-width="100px">
+          <el-input v-model="editInstockForm.num" autocomplete="off" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="实时库存" prop="stock" label-width="100px">
+          <el-input v-model="editInstockForm.stock" autocomplete="off" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="流程状态" prop="inState" label-width="100px">
+          <el-input v-model="editInstockForm.inState" autocomplete="off" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="入库商品" label-width="100px">
+          <!-- 当select的绑定值与value相同,默认显示对应label -->
+          <el-select v-model="editInstockForm.itemId">
+            <el-option
+              v-for="(item,index) in itemList"
+              :label="item.itemName"
+              :value="item.itemId"
+              :key="index"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="入库员" label-width="100px">
+          <!-- 当select的绑定值与value相同,默认显示对应label -->
+          <el-select v-model="editInstockForm.userId">
             <el-option
               v-for="(manager,index) in managerList"
               :label="manager.username"
@@ -226,38 +262,7 @@ export default {
         stock: '',
         inState: '',
         num: '',
-        inTime: '',
-        updateUserId: '',
-        updateUserStr: '',
-        updateTime: '',
-        createUserId: '',
-        createUserStr: '',
-        createTime: ''
-      },
-
-      // 添加用户限制规则
-      instockRules: {
-        instockName: [
-          {
-            required: true,
-            message: '请输入名称',
-            trigger: 'change'
-          }
-        ],
-        sn: [
-          {
-            required: true,
-            message: '请输入编号',
-            trigger: 'change'
-          }
-        ],
-        addr: [
-          {
-            required: true,
-            message: '请输入地址',
-            trigger: 'change'
-          }
-        ]
+        inTime: ''
       },
 
       // 组件可见性
@@ -371,7 +376,9 @@ export default {
       this.createInstockForm.buyId = ''
       this.createInstockForm.stock = '100'
       this.createInstockForm.inState = '1'
-      this.createInstockForm.inTime = moment(this.createInstockForm.inTime).format('YYYY-MM-DD HH:mm:ss')
+      this.createInstockForm.inTime = moment(
+        this.createInstockForm.inTime
+      ).format('YYYY-MM-DD HH:mm:ss')
       const res = await this.$http({
         url: 'http://www.ericson.top:6001/instock',
         method: 'post',
@@ -380,7 +387,6 @@ export default {
       console.log(res)
       const { status } = res.data
       console.log(status)
-
       // 判断返回正确结果
       if (status === '200') {
         this.$message.success('添加入库流水成功')
@@ -400,17 +406,21 @@ export default {
     showEditInstockDia (instock) {
       this.dialogFormVisibleEditInstock = true
       this.getManagerlist()
-      this.editInstockId = instock.instockId
-      this.editInstockForm.instockName = instock.instockName
-      this.editInstockForm.sn = instock.sn
-      this.editInstockForm.managerId = instock.managerId
-      this.editInstockForm.addr = instock.addr
+      this.getStoreList()
+      this.getItemList()
+      this.editInstockForm = instock
     },
 
     // 编辑入库流水
     async editInstock () {
+      this.editInstockForm.inTime = moment(this.editInstockForm.inTime).format(
+        'YYYY-MM-DD HH:mm:ss'
+      )
+      this.editInstockForm.createTime = undefined
+      this.editInstockForm.updateTime = undefined
+
       const res = await this.$http({
-        url: 'http://www.ericson.top:6001/instock/' + this.editInstockId,
+        url: 'http://www.ericson.top:6001/instock/' + this.editInstockForm.id,
         method: 'put',
         data: this.editInstockForm
       })
