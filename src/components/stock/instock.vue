@@ -16,20 +16,20 @@
     </el-row>
     <!-- 表格 -->
     <el-table ref="multipleTable" :data="tableData" height="500px" style="width: 100%,">
-      <el-table-column prop="id" label="id" sortable="custom"></el-table-column>
-      <el-table-column prop="sn" label="编号" width="180" sortable="custom"></el-table-column>
-      <el-table-column prop="storeStr" label="仓库名" width="120" sortable="custom"></el-table-column>
-      <el-table-column prop="userStr" label="入库员" width="110" sortable="custom"></el-table-column>
-      <el-table-column prop="itemStr" label="入库商品" width="130" sortable="custom"></el-table-column>
-      <el-table-column prop="buyId" label="采购订单号" width="170" sortable="custom"></el-table-column>
-      <el-table-column prop="stock" label="实时库存" width="110" sortable="custom"></el-table-column>
-      <el-table-column prop="inState" label="流程状态" width="110" sortable="custom"></el-table-column>
-      <el-table-column prop="num" label="数量" sortable="custom"></el-table-column>
-      <el-table-column prop="inTime" label="入库日期" width="140" sortable="custom"></el-table-column>
-      <el-table-column prop="updateUserStr" label="修改用户" width="110" sortable="custom"></el-table-column>
-      <el-table-column prop="updateTime" label="修改时间" sortable="custom" width="180"></el-table-column>
-      <el-table-column prop="createUserStr" label="创建用户" width="110" sortable="custom"></el-table-column>
-      <el-table-column prop="createTime" label="创建时间" sortable="custom" width="180"></el-table-column>
+      <el-table-column prop="id" label="id" sortable></el-table-column>
+      <el-table-column prop="sn" label="编号" width="180" sortable></el-table-column>
+      <el-table-column prop="storeStr" label="仓库名" width="120" sortable></el-table-column>
+      <el-table-column prop="userStr" label="入库员" width="110" sortable></el-table-column>
+      <el-table-column prop="itemStr" label="入库商品" width="130" sortable></el-table-column>
+      <el-table-column prop="buyId" label="采购订单号" width="170" sortable></el-table-column>
+      <el-table-column prop="stock" label="实时库存" width="110" sortable></el-table-column>
+      <el-table-column prop="inState" label="流程状态" width="110" sortable></el-table-column>
+      <el-table-column prop="num" label="数量" sortable></el-table-column>
+      <el-table-column prop="inTime" label="入库日期" width="140" sortable></el-table-column>
+      <el-table-column prop="updateUserStr" label="修改用户" width="110" sortable></el-table-column>
+      <el-table-column prop="updateTime" label="修改时间" sortable width="180"></el-table-column>
+      <el-table-column prop="createUserStr" label="创建用户" width="110" sortable></el-table-column>
+      <el-table-column prop="createTime" label="创建时间" sortable width="180"></el-table-column>
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
           <el-row>
@@ -71,28 +71,6 @@
     <!-- 添加入库流水对话框 -->
     <el-dialog title="添加入库流水" :visible.sync="dialogFormVisibleAddInstock">
       <el-form :model="createInstockForm">
-        <el-form-item label="仓库名" prop="storeStr" label-width="100px">
-          <!-- 当select的绑定值与value相同,默认显示对应label -->
-          <el-select v-model="createInstockForm.storeId">
-            <el-option
-              v-for="(store,index) in storeList"
-              :label="store.storeName"
-              :value="store.storeId"
-              :key="index"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="入库时间" label-width="100px">
-          <el-date-picker
-            v-model="createInstockForm.inTime"
-            type="date"
-            placeholder="选择日期"
-            format="yyyy 年 MM 月 dd 日"
-          ></el-date-picker>
-        </el-form-item>
-        <el-form-item label="数量" prop="num" label-width="100px">
-          <el-input v-model="createInstockForm.num" autocomplete="off" clearable></el-input>
-        </el-form-item>
         <el-form-item label="入库商品" label-width="100px">
           <!-- 当select的绑定值与value相同,默认显示对应label -->
           <el-select v-model="createInstockForm.itemId">
@@ -104,6 +82,23 @@
             ></el-option>
           </el-select>
         </el-form-item>
+
+        <el-form-item label="仓库名" prop="storeStr" label-width="100px">
+          <!-- 当select的绑定值与value相同,默认显示对应label -->
+          <el-select v-model="createInstockForm.storeId">
+            <el-option
+              v-for="(store,index) in storeList"
+              :label="store.storeName"
+              :value="store.storeId"
+              :key="index"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="数量" prop="num" label-width="100px">
+          <el-input v-model="createInstockForm.num" autocomplete="off" clearable></el-input>
+        </el-form-item>
+
         <el-form-item label="入库员" label-width="100px">
           <!-- 当select的绑定值与value相同,默认显示对应label -->
           <el-select v-model="createInstockForm.userId">
@@ -115,7 +110,17 @@
             ></el-option>
           </el-select>
         </el-form-item>
+
+        <el-form-item label="入库时间" label-width="100px">
+          <el-date-picker
+            v-model="createInstockForm.inTime"
+            type="date"
+            placeholder="选择日期"
+            format="yyyy 年 MM 月 dd 日"
+          ></el-date-picker>
+        </el-form-item>
       </el-form>
+
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleAddInstock = false">取 消</el-button>
         <el-button type="primary" @click="createInstock()">确 定</el-button>
@@ -128,37 +133,7 @@
         <el-form-item label="编号" prop="sn" label-width="100px">
           <el-input v-model="editInstockForm.sn" autocomplete="off" clearable></el-input>
         </el-form-item>
-        <el-form-item label="仓库名" prop="storeStr" label-width="100px">
-          <!-- 当select的绑定值与value相同,默认显示对应label -->
-          <el-select v-model="editInstockForm.storeId">
-            <el-option
-              v-for="(store,index) in storeList"
-              :label="store.storeName"
-              :value="store.storeId"
-              :key="index"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="入库时间" label-width="100px">
-          <el-date-picker
-            v-model="editInstockForm.inTime"
-            type="date"
-            placeholder="选择日期"
-            format="yyyy 年 MM 月 dd 日"
-          ></el-date-picker>
-        </el-form-item>
-        <el-form-item label="采购订单号" prop="buyId" label-width="100px">
-          <el-input v-model="editInstockForm.buyId" autocomplete="off" clearable></el-input>
-        </el-form-item>
-        <el-form-item label="数量" prop="num" label-width="100px">
-          <el-input v-model="editInstockForm.num" autocomplete="off" clearable></el-input>
-        </el-form-item>
-        <el-form-item label="实时库存" prop="stock" label-width="100px">
-          <el-input v-model="editInstockForm.stock" autocomplete="off" clearable></el-input>
-        </el-form-item>
-        <el-form-item label="流程状态" prop="inState" label-width="100px">
-          <el-input v-model="editInstockForm.inState" autocomplete="off" clearable></el-input>
-        </el-form-item>
+
         <el-form-item label="入库商品" label-width="100px">
           <!-- 当select的绑定值与value相同,默认显示对应label -->
           <el-select v-model="editInstockForm.itemId">
@@ -170,6 +145,28 @@
             ></el-option>
           </el-select>
         </el-form-item>
+
+        <el-form-item label="仓库名" prop="storeStr" label-width="100px">
+          <!-- 当select的绑定值与value相同,默认显示对应label -->
+          <el-select v-model="editInstockForm.storeId">
+            <el-option
+              v-for="(store,index) in storeList"
+              :label="store.storeName"
+              :value="store.storeId"
+              :key="index"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="入库时间" label-width="100px">
+          <el-date-picker
+            v-model="editInstockForm.inTime"
+            type="date"
+            placeholder="选择日期"
+            format="yyyy 年 MM 月 dd 日"
+          ></el-date-picker>
+        </el-form-item>
+
         <el-form-item label="入库员" label-width="100px">
           <!-- 当select的绑定值与value相同,默认显示对应label -->
           <el-select v-model="editInstockForm.userId">
@@ -181,7 +178,24 @@
             ></el-option>
           </el-select>
         </el-form-item>
+
+        <el-form-item label="采购订单号" prop="buyId" label-width="100px">
+          <el-input v-model="editInstockForm.buyId" autocomplete="off" clearable></el-input>
+        </el-form-item>
+
+        <el-form-item label="数量" prop="num" label-width="100px">
+          <el-input v-model="editInstockForm.num" autocomplete="off" clearable></el-input>
+        </el-form-item>
+
+        <el-form-item label="实时库存" prop="stock" label-width="100px">
+          <el-input v-model="editInstockForm.stock" autocomplete="off" clearable></el-input>
+        </el-form-item>
+
+        <el-form-item label="流程状态" prop="inState" label-width="100px">
+          <el-input v-model="editInstockForm.inState" autocomplete="off" clearable></el-input>
+        </el-form-item>
       </el-form>
+
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleEditInstock = false">取 消</el-button>
         <el-button type="primary" @click="editInstock()">确 定</el-button>
@@ -246,8 +260,6 @@ export default {
         num: '',
         inTime: ''
       },
-
-      editInstockId: '',
 
       editInstockForm: {
         id: '',
@@ -404,11 +416,20 @@ export default {
 
     // 显示编辑入库流水表单
     showEditInstockDia (instock) {
-      this.dialogFormVisibleEditInstock = true
       this.getManagerlist()
       this.getStoreList()
       this.getItemList()
-      this.editInstockForm = instock
+      this.editInstockForm.id = instock.id
+      this.editInstockForm.sn = instock.sn
+      this.editInstockForm.itemId = instock.itemId
+      this.editInstockForm.storeId = instock.storeId
+      this.editInstockForm.inTime = instock.inTime
+      this.editInstockForm.userId = instock.userId
+      this.editInstockForm.buyId = instock.buyId
+      this.editInstockForm.num = instock.num
+      this.editInstockForm.stock = instock.stock
+      this.editInstockForm.inState = instock.inState
+      this.dialogFormVisibleEditInstock = true
     },
 
     // 编辑入库流水
@@ -431,10 +452,16 @@ export default {
       // 判断返回正确结果
       if (status === '200') {
         this.$message.success('修改入库流水信息成功')
-        this.editInstockForm.instockName = ''
+        this.editInstockForm.id = ''
         this.editInstockForm.sn = ''
-        this.editInstockForm.managerId = ''
-        this.editInstockForm.addr = ''
+        this.editInstockForm.itemId = ''
+        this.editInstockForm.storeId = ''
+        this.editInstockForm.inTime = ''
+        this.editInstockForm.userId = ''
+        this.editInstockForm.buyId = ''
+        this.editInstockForm.num = ''
+        this.editInstockForm.stock = ''
+        this.editInstockForm.inState = ''
         this.dialogFormVisibleEditInstock = false
         this.getInstockList()
       } else {

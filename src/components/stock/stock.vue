@@ -10,13 +10,6 @@
           <el-button slot="append" icon="el-icon-search" @click="getStockList()"></el-button>
         </el-input>
       </el-col>
-      <el-col :span="4">
-        <el-button
-          class="inputSearchButton"
-          type="success"
-          @click="dialogFormVisibleAddStock = true"
-        >新增库存</el-button>
-      </el-col>
     </el-row>
     <!-- 表格 -->
     <el-table
