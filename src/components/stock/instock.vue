@@ -384,10 +384,6 @@ export default {
 
     // 添加入库流水
     async createInstock () {
-      this.createInstockForm.sn = 'IN20200505006'
-      this.createInstockForm.buyId = ''
-      this.createInstockForm.stock = '100'
-      this.createInstockForm.inState = '1'
       this.createInstockForm.inTime = moment(
         this.createInstockForm.inTime
       ).format('YYYY-MM-DD HH:mm:ss')
