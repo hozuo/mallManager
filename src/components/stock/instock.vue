@@ -197,7 +197,7 @@ export default {
   data () {
     return {
       // 面包屑参数
-      myBreadList: ['基础信息管理', '入库流水信息录入'],
+      myBreadList: ['库存管理', '入库流水'],
 
       // 表格使用的数组
       tableData: [],
