@@ -17,7 +17,7 @@
     <!-- 表格 -->
     <el-table ref="multipleTable" :data="tableData" height="500px" style="width: 100%,">
       <el-table-column prop="id" label="id" width="300" sortable></el-table-column>
-      <el-table-column prop="sn" label="编号" width="190" sortable></el-table-column>
+      <el-table-column prop="sn" label="编号" width="210" sortable></el-table-column>
       <el-table-column prop="supplierStr" label="供应商" width="310" sortable></el-table-column>
       <el-table-column prop label="商品" width="160">
         <template slot-scope="scope">

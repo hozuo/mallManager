@@ -16,6 +16,7 @@ import Item from '@/components/data/item.vue'
 import Supplier from '@/components/data/supplier.vue'
 
 import Instock from '@/components/stock/instock.vue'
+import Outstock from '@/components/stock/outstock.vue'
 import Stock from '@/components/stock/stock.vue'
 
 import Order from '@/components/order/order.vue'
@@ -79,6 +80,10 @@ var router = new Router({
         name: 'sale',
         path: '/sale',
         component: Sale
+      }, {
+        name: 'outstock',
+        path: '/outstock',
+        component: Outstock
       }]
     }
   ]
