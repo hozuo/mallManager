@@ -18,6 +18,8 @@ import Supplier from '@/components/data/supplier.vue'
 import Instock from '@/components/stock/instock.vue'
 import Stock from '@/components/stock/stock.vue'
 
+import Order from '@/components/order/order.vue'
+
 import { Message } from 'element-ui'
 
 Vue.use(Router)
@@ -68,6 +70,10 @@ var router = new Router({
         name: 'supplier',
         path: '/supplier',
         component: Supplier
+      }, {
+        name: 'order',
+        path: '/order',
+        component: Order
       }]
     }
   ]

@@ -433,9 +433,6 @@ export default {
       this.editInstockForm.inTime = moment(this.editInstockForm.inTime).format(
         'YYYY-MM-DD HH:mm:ss'
       )
-      this.editInstockForm.createTime = undefined
-      this.editInstockForm.updateTime = undefined
-
       const res = await this.$http({
         url: 'http://www.ericson.top:6001/instock/' + this.editInstockForm.id,
         method: 'put',
