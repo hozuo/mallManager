@@ -13,6 +13,7 @@ import Menu from '@/components/power/menu.vue'
 import Cat from '@/components/data/cat.vue'
 import Store from '@/components/data/store.vue'
 import Item from '@/components/data/item.vue'
+import Supplier from '@/components/data/supplier.vue'
 
 import Instock from '@/components/stock/instock.vue'
 import Stock from '@/components/stock/stock.vue'
@@ -63,6 +64,10 @@ var router = new Router({
         name: 'stock',
         path: '/stock',
         component: Stock
+      }, {
+        name: 'supplier',
+        path: '/supplier',
+        component: Supplier
       }]
     }
   ]

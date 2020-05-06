@@ -7,20 +7,22 @@
     <el-row>
       <el-col :span="8">
         <el-input placeholder="请输入内容" v-model="pageQuery.name" class="inputSearch" clearable>
-          <el-button slot="append" icon="el-icon-search" @click="getStoreList()"></el-button>
+          <el-button slot="append" icon="el-icon-search" @click="getSupplierList()"></el-button>
         </el-input>
       </el-col>
       <el-col :span="4">
-        <el-button class="inputSearchButton" type="success" @click="showAddStoreDia()">新增仓库</el-button>
+        <el-button class="inputSearchButton" type="success" @click="showAddSupplierDia()">新增供货商</el-button>
       </el-col>
     </el-row>
     <!-- 表格 -->
     <el-table ref="multipleTable" :data="tableData" height="500px" style="width: 100%,">
-      <el-table-column prop="storeId" label="仓库id"></el-table-column>
-      <el-table-column prop="storeName" label="仓库名"></el-table-column>
-      <el-table-column prop="sn" label="编号"></el-table-column>
-      <el-table-column prop="addr" label="地址" width="270"></el-table-column>
-      <el-table-column prop="managerStr" label="管理员"></el-table-column>
+      <el-table-column prop="supId" label="id" width="70"></el-table-column>
+      <el-table-column prop="name" label="名称" width="180"></el-table-column>
+      <el-table-column prop="address" label="地址" width="180"></el-table-column>
+      <el-table-column prop="manager" label="负责人"></el-table-column>
+      <el-table-column prop="phone" label="电话" width="140"></el-table-column>
+      <el-table-column prop="fax" label="传真"></el-table-column>
+      <el-table-column prop="remark" label="备注" width="470"></el-table-column>
       <el-table-column prop="updateUserStr" label="修改用户"></el-table-column>
       <el-table-column prop="updateTime" label="修改时间" width="180"></el-table-column>
       <el-table-column prop="createUserStr" label="创建用户"></el-table-column>
@@ -30,7 +32,7 @@
           <el-row>
             <!-- 编辑 -->
             <el-button
-              @click="showEditStoreDia(scope.row)"
+              @click="showEditSupplierDia(scope.row)"
               type="primary"
               icon="el-icon-edit"
               circle
@@ -39,7 +41,7 @@
             ></el-button>
             <!-- 删除 -->
             <el-button
-              @click="showDeleteStoreBox(scope.row.storeId)"
+              @click="showDeleteSupplierBox(scope.row.supId)"
               type="danger"
               icon="el-icon-delete"
               circle
@@ -63,63 +65,67 @@
     ></el-pagination>
 
     <!-- 默认不显示 -->
-    <!-- 添加仓库对话框 -->
-    <el-dialog title="添加仓库" :visible.sync="dialogFormVisibleAddStore">
-      <el-form :model="createStoreForm" :rules="storeRules">
-        <el-form-item label="仓库名称" prop="storeName" label-width="100px">
-          <el-input v-model="createStoreForm.storeName" autocomplete="off" clearable></el-input>
+    <!-- 添加供货商对话框 -->
+    <el-dialog title="添加供货商" :visible.sync="dialogFormVisibleAddSupplier">
+      <el-form :model="createSupplierForm" :rules="supplierRules">
+        <el-form-item label="供货商名称" prop="name" label-width="100px">
+          <el-input v-model="createSupplierForm.name" autocomplete="off" clearable></el-input>
         </el-form-item>
-        <el-form-item label="仓库编号" prop="sn" label-width="100px">
-          <el-input v-model="createStoreForm.sn" autocomplete="off" clearable></el-input>
+        <el-form-item label="供货商地址" prop="address" label-width="100px">
+          <el-input v-model="createSupplierForm.address" autocomplete="off" clearable></el-input>
         </el-form-item>
-        <el-form-item label="仓库地址" prop="addr" label-width="100px">
-          <el-input v-model="createStoreForm.addr" autocomplete="off" clearable></el-input>
+        <el-form-item label="负责人姓名" prop="manager" label-width="100px">
+          <el-input v-model="createSupplierForm.manager" autocomplete="off" clearable></el-input>
         </el-form-item>
-        <el-form-item label="负责人" label-width="100px">
-          <!-- 当select的绑定值与value相同,默认显示对应label -->
-          <el-select v-model="createStoreForm.managerId">
-            <el-option
-              v-for="(manager,index) in managerlist"
-              :label="manager.username"
-              :value="manager.userId"
-              :key="index"
-            ></el-option>
-          </el-select>
+        <el-form-item label="电话" prop="phone" label-width="100px">
+          <el-input v-model="createSupplierForm.phone" autocomplete="off" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="传真" prop="fax" label-width="100px">
+          <el-input v-model="createSupplierForm.fax" autocomplete="off" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="备注" prop="remark" label-width="100px">
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            v-model="createSupplierForm.remark"
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisibleAddStore = false">取 消</el-button>
-        <el-button type="primary" @click="createStore()">确 定</el-button>
+        <el-button @click="dialogFormVisibleAddSupplier = false">取 消</el-button>
+        <el-button type="primary" @click="createSupplier()">确 定</el-button>
       </div>
     </el-dialog>
 
-    <!-- 编辑仓库对话框 -->
-    <el-dialog title="编辑仓库" :visible.sync="dialogFormVisibleEditStore">
-      <el-form :model="editStoreForm" :rules="storeRules">
-        <el-form-item label="仓库名称" prop="storeName" label-width="100px">
-          <el-input v-model="editStoreForm.storeName" autocomplete="off" clearable></el-input>
+    <!-- 编辑供货商对话框 -->
+    <el-dialog title="编辑供货商" :visible.sync="dialogFormVisibleEditSupplier">
+      <el-form :model="editSupplierForm" :rules="supplierRules">
+        <el-form-item label="供货商名称" prop="name" label-width="100px">
+          <el-input v-model="editSupplierForm.name" autocomplete="off" clearable></el-input>
         </el-form-item>
-        <el-form-item label="仓库编号" prop="sn" label-width="100px">
-          <el-input v-model="editStoreForm.sn" autocomplete="off" clearable></el-input>
+        <el-form-item label="供货商地址" prop="address" label-width="100px">
+          <el-input v-model="editSupplierForm.address" autocomplete="off" clearable></el-input>
         </el-form-item>
-        <el-form-item label="仓库地址" prop="addr" label-width="100px">
-          <el-input v-model="editStoreForm.addr" autocomplete="off" clearable></el-input>
+        <el-form-item label="负责人姓名" prop="manager" label-width="100px">
+          <el-input v-model="editSupplierForm.manager" autocomplete="off" clearable></el-input>
         </el-form-item>
-        <el-form-item label="角色" label-width="100px">
-          <!-- 当select的绑定值与value相同,默认显示对应label -->
-          <el-select v-model="editStoreForm.managerId">
-            <el-option
-              v-for="(manager,index) in managerlist"
-              :label="manager.username"
-              :value="manager.userId"
-              :key="index"
-            ></el-option>
-          </el-select>
+        <el-form-item label="电话" prop="phone" label-width="100px">
+          <el-input v-model="editSupplierForm.phone" autocomplete="off" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="传真" prop="fax" label-width="100px">
+          <el-input v-model="editSupplierForm.fax" autocomplete="off" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="备注" prop="remark" label-width="100px">
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            v-model="editSupplierForm.remark"
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisibleEditStore = false">取 消</el-button>
-        <el-button type="primary" @click="editStore()">确 定</el-button>
+        <el-button @click="dialogFormVisibleEditSupplier = false">取 消</el-button>
+        <el-button type="primary" @click="editSupplier()">确 定</el-button>
       </div>
     </el-dialog>
   </el-card>
@@ -130,7 +136,7 @@ export default {
   data () {
     return {
       // 面包屑参数
-      myBreadList: ['基础信息管理', '仓库信息录入'],
+      myBreadList: ['基础信息管理', '供货商信息录入'],
 
       // 表格使用的数组
       tableData: [],
@@ -161,41 +167,36 @@ export default {
       managerlist: [],
 
       // 新增使用的数据
-      createStoreForm: {
-        storeId: '',
-        storeName: '',
-        sn: '',
-        addr: '',
-        managerId: ''
+      createSupplierForm: {
+        name: '',
+        address: '',
+        manager: '',
+        phone: '',
+        fax: '',
+        remark: ''
       },
 
-      editStoreId: '',
+      editSupplierId: '',
 
-      editStoreForm: {
-        storeId: '',
-        storeName: '',
-        sn: '',
-        addr: '',
-        managerId: ''
+      editSupplierForm: {
+        name: '',
+        address: '',
+        manager: '',
+        phone: '',
+        fax: '',
+        remark: ''
       },
 
       // 添加用户限制规则
-      storeRules: {
-        storeName: [
+      supplierRules: {
+        name: [
           {
             required: true,
             message: '请输入名称',
             trigger: 'change'
           }
         ],
-        sn: [
-          {
-            required: true,
-            message: '请输入编号',
-            trigger: 'change'
-          }
-        ],
-        addr: [
+        address: [
           {
             required: true,
             message: '请输入地址',
@@ -205,19 +206,19 @@ export default {
       },
 
       // 组件可见性
-      dialogFormVisibleAddStore: false,
-      dialogFormVisibleEditStore: false
+      dialogFormVisibleAddSupplier: false,
+      dialogFormVisibleEditSupplier: false
     }
   },
   created () {
-    // 获取仓库列表
-    this.getStoreList()
+    // 获取供货商列表
+    this.getSupplierList()
   },
   methods: {
-    // 获取仓库列表
-    async getStoreList () {
+    // 获取供货商列表
+    async getSupplierList () {
       const res = await this.$http({
-        url: 'http://api.ericson.top:6002/stores',
+        url: 'http://api.ericson.top:6002/suppliers',
         method: 'get',
         params: this.pageQuery
       })
@@ -239,35 +240,16 @@ export default {
       }
     },
 
-    async showAddStoreDia () {
-      this.dialogFormVisibleAddStore = true
-      this.getManagerlist()
+    async showAddSupplierDia () {
+      this.dialogFormVisibleAddSupplier = true
     },
 
-    async getManagerlist () {
+    // 添加供货商
+    async createSupplier () {
       const res = await this.$http({
-        url: 'http://api.ericson.top:2020/users',
-        method: 'get'
-      })
-      // 解构
-      const { status, msg } = res.data
-      // 判断返回正确结果
-      if (status === '200') {
-        // 解构
-        const { data } = res.data
-        console.log(data)
-        this.managerlist = data.records
-      } else {
-        console.log(msg)
-      }
-    },
-
-    // 添加仓库
-    async createStore () {
-      const res = await this.$http({
-        url: 'http://www.ericson.top:6002/store',
+        url: 'http://www.ericson.top:6002/supplier',
         method: 'post',
-        data: this.createStoreForm
+        data: this.createSupplierForm
       })
       console.log(res)
       const { status } = res.data
@@ -275,36 +257,39 @@ export default {
 
       // 判断返回正确结果
       if (status === '200') {
-        this.$message.success('添加仓库成功')
-        this.createStoreForm.storeName = ''
-        this.createStoreForm.sn = ''
-        this.createStoreForm.managerId = ''
-        this.createStoreForm.addr = ''
-        this.dialogFormVisibleAddStore = false
-        this.getStoreList()
+        this.$message.success('添加供货商成功')
+        this.createSupplierForm.name = ''
+        this.createSupplierForm.address = ''
+        this.createSupplierForm.manager = ''
+        this.createSupplierForm.phone = ''
+        this.createSupplierForm.fax = ''
+        this.createSupplierForm.remark = ''
+        this.dialogFormVisibleAddSupplier = false
+        this.getSupplierList()
       } else {
         const { msg } = res.data
         console.log(msg)
       }
     },
 
-    // 显示编辑仓库表单
-    showEditStoreDia (store) {
-      this.dialogFormVisibleEditStore = true
-      this.getManagerlist()
-      this.editStoreId = store.storeId
-      this.editStoreForm.storeName = store.storeName
-      this.editStoreForm.sn = store.sn
-      this.editStoreForm.managerId = store.managerId
-      this.editStoreForm.addr = store.addr
+    // 显示编辑供货商表单
+    showEditSupplierDia (supplier) {
+      this.dialogFormVisibleEditSupplier = true
+      this.editSupplierForm.SupId = supplier.supId
+      this.editSupplierForm.name = supplier.name
+      this.editSupplierForm.address = supplier.address
+      this.editSupplierForm.manager = supplier.manager
+      this.editSupplierForm.phone = supplier.phone
+      this.editSupplierForm.fax = supplier.fax
+      this.editSupplierForm.remark = supplier.remark
     },
 
-    // 编辑仓库
-    async editStore () {
+    // 编辑供货商
+    async editSupplier () {
       const res = await this.$http({
-        url: 'http://www.ericson.top:6002/store/' + this.editStoreId,
+        url: 'http://www.ericson.top:6002/supplier/' + this.editSupplierForm.SupId,
         method: 'put',
-        data: this.editStoreForm
+        data: this.editSupplierForm
       })
       console.log(res)
       const { status } = res.data
@@ -312,13 +297,15 @@ export default {
 
       // 判断返回正确结果
       if (status === '200') {
-        this.$message.success('修改仓库信息成功')
-        this.editStoreForm.storeName = ''
-        this.editStoreForm.sn = ''
-        this.editStoreForm.managerId = ''
-        this.editStoreForm.addr = ''
-        this.dialogFormVisibleEditStore = false
-        this.getStoreList()
+        this.$message.success('修改供货商信息成功')
+        this.editSupplierForm.name = ''
+        this.editSupplierForm.address = ''
+        this.editSupplierForm.manager = ''
+        this.editSupplierForm.phone = ''
+        this.editSupplierForm.fax = ''
+        this.editSupplierForm.remark = ''
+        this.dialogFormVisibleEditSupplier = false
+        this.getSupplierList()
       } else {
         const { msg } = res.data
         console.log(msg)
@@ -326,24 +313,24 @@ export default {
     },
 
     // 显示删除对话框
-    showDeleteStoreBox (storeId) {
-      this.$confirm('确认删除仓库吗?', '提示', {
+    showDeleteSupplierBox (supId) {
+      this.$confirm('确认删除供货商吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          this.deleteStore(storeId)
+          this.deleteSupplier(supId)
         })
-        .storech(() => {
+        .supplierch(() => {
           this.$message.info('已取消')
         })
     },
 
-    // 删除仓库
-    async deleteStore (id) {
+    // 删除供货商
+    async deleteSupplier (id) {
       const res = await this.$http({
-        url: 'http://www.ericson.top:6002/store/' + id,
+        url: 'http://www.ericson.top:6002/supplier/' + id,
         method: 'delete'
       })
       console.log(res)
@@ -353,7 +340,7 @@ export default {
       // 判断返回正确结果
       if (status === '200') {
         this.$message.success('删除成功')
-        this.getStoreList()
+        this.getSupplierList()
       } else {
         const { msg } = res.data
         console.log(msg)
@@ -364,12 +351,12 @@ export default {
     handleSizeChange (val) {
       console.log(`每页 ${val} 条`)
       this.pageQuery.pageSize = val
-      this.getStoreList()
+      this.getSupplierList()
     },
     handleCurrentChange (val) {
       console.log(`当前页: ${val}`)
       this.pageQuery.pageCurrent = val
-      this.getStoreList()
+      this.getSupplierList()
     }
   }
 }
