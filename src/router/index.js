@@ -19,6 +19,7 @@ import Instock from '@/components/stock/instock.vue'
 import Stock from '@/components/stock/stock.vue'
 
 import Order from '@/components/order/order.vue'
+import Sale from '@/components/order/sale.vue'
 
 import { Message } from 'element-ui'
 
@@ -74,6 +75,10 @@ var router = new Router({
         name: 'order',
         path: '/order',
         component: Order
+      }, {
+        name: 'sale',
+        path: '/sale',
+        component: Sale
       }]
     }
   ]

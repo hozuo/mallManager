@@ -11,7 +11,7 @@
         </el-input>
       </el-col>
       <el-col :span="4">
-        <el-button class="inputSearchButton" type="success" @click="showAddOrderDia()">新增采购订单</el-button>
+        <el-button class="inputSearchButton" type="success" @click="showAddOrderDia()">新增销售订单</el-button>
       </el-col>
     </el-row>
     <!-- 表格 -->
@@ -24,7 +24,7 @@
           <el-tag @click="showOrderItemsDia(scope.row)">点击查看商品详情</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="userStr" label="采购员" width="110" sortable></el-table-column>
+      <el-table-column prop="userStr" label="销售员" width="110" sortable></el-table-column>
       <el-table-column prop="storeStr" label="仓库" width="110" sortable></el-table-column>
       <el-table-column prop="state" label="流程状态" width="110" sortable></el-table-column>
       <el-table-column prop="updateUserStr" label="修改用户" width="110" sortable></el-table-column>
@@ -69,8 +69,8 @@
     ></el-pagination>
 
     <!-- 默认不显示 -->
-    <!-- 添加采购订单对话框 -->
-    <el-dialog title="添加采购订单" :visible.sync="dialogFormVisibleAddOrder">
+    <!-- 添加销售订单对话框 -->
+    <el-dialog title="添加销售订单" :visible.sync="dialogFormVisibleAddOrder">
       <el-form :model="createOrderForm">
         <!-- 商品 -->
         <el-form-item
@@ -142,8 +142,8 @@
       </div>
     </el-dialog>
 
-    <!-- 编辑采购订单对话框 -->
-    <el-dialog title="编辑采购订单" :visible.sync="dialogFormVisibleEditOrder">
+    <!-- 编辑销售订单对话框 -->
+    <el-dialog title="编辑销售订单" :visible.sync="dialogFormVisibleEditOrder">
       <el-form :model="editOrderForm">
         <!-- 商品 -->
         <el-form-item
@@ -219,7 +219,7 @@
       <el-table :data="itemKeyList" style="width: 100%">
         <el-table-column prop="id" label="商品id" width="180"></el-table-column>
         <el-table-column prop="name" label="商品名称" width="180"></el-table-column>
-        <el-table-column prop="num" label="采购数量"></el-table-column>
+        <el-table-column prop="num" label="销售数量"></el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleOrderItems = false">确 定</el-button>
@@ -233,7 +233,7 @@ export default {
   data () {
     return {
       // 面包屑参数
-      myBreadList: ['订单管理', '采购订单'],
+      myBreadList: ['订单管理', '销售订单'],
 
       // 表格使用的数组
       tableData: [],
@@ -313,11 +313,11 @@ export default {
     }
   },
   created () {
-    // 获取采购订单列表
+    // 获取销售订单列表
     this.getOrderList()
   },
   methods: {
-    // 获取采购订单列表
+    // 获取销售订单列表
     async getOrderList () {
       const res = await this.$http({
         url: 'http://api.ericson.top:6003/orders',
@@ -351,7 +351,7 @@ export default {
       this.getSupplierList()
     },
 
-    // 获取采购管理员(用户)列表
+    // 获取销售管理员(用户)列表
     async getManagerlist () {
       const res = await this.$http({
         url: 'http://api.ericson.top:2020/users',
@@ -443,7 +443,7 @@ export default {
       })
     },
 
-    // 添加采购订单
+    // 添加销售订单
     async createOrder () {
       var jsonstr = JSON.stringify(this.createOrderItems)
       this.createOrderForm.orderItems = jsonstr
@@ -459,7 +459,7 @@ export default {
       console.log(status)
       // 判断返回正确结果
       if (status === '200') {
-        this.$message.success('添加采购订单成功')
+        this.$message.success('添加销售订单成功')
         this.createOrderForm.orderName = ''
         this.createOrderForm.sn = ''
         this.createOrderForm.managerId = ''
@@ -472,7 +472,7 @@ export default {
       }
     },
 
-    // 显示编辑采购订单表单
+    // 显示编辑销售订单表单
     showEditOrderDia (order) {
       this.getManagerlist()
       this.getStoreList()
@@ -490,7 +490,7 @@ export default {
       this.dialogFormVisibleEditOrder = true
     },
 
-    // 编辑采购订单
+    // 编辑销售订单
     async editOrder () {
       const res = await this.$http({
         url: 'http://www.ericson.top:6003/order/' + this.editOrderForm.id,
@@ -503,7 +503,7 @@ export default {
 
       // 判断返回正确结果
       if (status === '200') {
-        this.$message.success('修改采购订单成功')
+        this.$message.success('修改销售订单成功')
         this.editOrderForm.sn = ''
         this.editOrderForm.supplierId = ''
         this.editOrderForm.supplierStr = ''
@@ -522,7 +522,7 @@ export default {
 
     // 显示删除对话框
     showDeleteOrderBox (orderId) {
-      this.$confirm('确认删除采购订单吗?', '提示', {
+      this.$confirm('确认删除销售订单吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -535,7 +535,7 @@ export default {
         })
     },
 
-    // 删除采购订单
+    // 删除销售订单
     async deleteOrder (id) {
       const res = await this.$http({
         url: 'http://www.ericson.top:6003/order/' + id,
